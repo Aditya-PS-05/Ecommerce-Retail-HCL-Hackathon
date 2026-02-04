@@ -1,10 +1,9 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 
 const Navbar = ({ user, cartCount = 0, onLogout }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
-  const navigate = useNavigate();
 
   return (
     <nav className="bg-white shadow-md sticky top-0 z-50">
@@ -14,21 +13,6 @@ const Navbar = ({ user, cartCount = 0, onLogout }) => {
           <Link to="/" className="flex items-center space-x-2">
             <span className="text-2xl font-bold text-primary">🛒 RetailHub</span>
           </Link>
-
-          {/* Search Bar - Hidden on mobile */}
-          <div className="hidden md:flex flex-1 max-w-md mx-8">
-            <div className="relative w-full">
-              <input
-                type="text"
-                placeholder="Search products..."
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-primary"
-                onKeyDown={(e) => e.key === 'Enter' && navigate(`/search?q=${e.target.value}`)}
-              />
-              <button className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-primary">
-                🔍
-              </button>
-            </div>
-          </div>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
@@ -94,17 +78,6 @@ const Navbar = ({ user, cartCount = 0, onLogout }) => {
         {/* Mobile Menu */}
         {isMenuOpen && (
           <div className="md:hidden py-4 border-t">
-            <input
-              type="text"
-              placeholder="Search products..."
-              className="w-full px-4 py-2 mb-4 border border-gray-300 rounded-lg"
-              onKeyDown={(e) => {
-                if (e.key === 'Enter') {
-                  navigate(`/search?q=${e.target.value}`);
-                  setIsMenuOpen(false);
-                }
-              }}
-            />
             <Link to="/products" className="block py-2 text-gray-700" onClick={() => setIsMenuOpen(false)}>
               Products
             </Link>
