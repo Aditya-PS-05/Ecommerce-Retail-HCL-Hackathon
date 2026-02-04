@@ -1,9 +1,11 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ProductCard, Loader, Pagination, Breadcrumb, SearchBar } from '../components';
+import { useCart } from '../context';
 import api from '../api/axios';
 
 const ProductListing = () => {
+  const { addToCart } = useCart();
   const [searchParams, setSearchParams] = useSearchParams();
   
   // State
@@ -150,9 +152,7 @@ const ProductListing = () => {
   };
 
   const handleAddToCart = (product) => {
-    // TODO: Implement cart functionality
-    console.log('Add to cart:', product);
-    alert(`Added "${product.name}" to cart!`);
+    addToCart(product);
   };
 
   const clearFilters = () => {
@@ -438,32 +438,35 @@ const ListIcon = () => (
 
 // Mock data for demo
 const mockCategories = [
-  { _id: '1', name: 'Burgers', logo_url: null },
-  { _id: '2', name: 'Pizza', logo_url: null },
-  { _id: '3', name: 'Drinks', logo_url: null },
-  { _id: '4', name: 'Sides', logo_url: null },
-  { _id: '5', name: 'Desserts', logo_url: null },
+  { _id: '1', name: 'Smartphones', logo_url: null },
+  { _id: '2', name: 'Laptops', logo_url: null },
+  { _id: '3', name: 'Audio', logo_url: null },
+  { _id: '4', name: 'Accessories', logo_url: null },
+  { _id: '5', name: 'Wearables', logo_url: null },
+  { _id: '6', name: 'Gaming', logo_url: null },
 ];
 
 const mockProducts = [
-  { _id: '1', name: 'Classic Burger', price: 9.99, tax_percent: 8, stock: 50, category_id: '1', image_url: null, description: 'Juicy beef patty with fresh vegetables' },
-  { _id: '2', name: 'Cheese Burger', price: 11.99, tax_percent: 8, stock: 45, category_id: '1', image_url: null, description: 'Classic burger with melted cheese' },
-  { _id: '3', name: 'Double Burger', price: 14.99, tax_percent: 8, stock: 30, category_id: '1', image_url: null, description: 'Double patty for extra hunger' },
-  { _id: '4', name: 'Veggie Burger', price: 10.99, tax_percent: 8, stock: 25, category_id: '1', image_url: null, description: 'Plant-based patty with fresh veggies' },
-  { _id: '5', name: 'Margherita Pizza', price: 12.99, tax_percent: 8, stock: 40, category_id: '2', image_url: null, description: 'Classic tomato and mozzarella' },
-  { _id: '6', name: 'Pepperoni Pizza', price: 14.99, tax_percent: 8, stock: 35, category_id: '2', image_url: null, description: 'Loaded with pepperoni slices' },
-  { _id: '7', name: 'BBQ Chicken Pizza', price: 15.99, tax_percent: 8, stock: 28, category_id: '2', image_url: null, description: 'BBQ sauce with grilled chicken' },
-  { _id: '8', name: 'Veggie Pizza', price: 13.99, tax_percent: 8, stock: 32, category_id: '2', image_url: null, description: 'Fresh vegetables on crispy crust' },
-  { _id: '9', name: 'Coca Cola', price: 2.99, tax_percent: 5, stock: 100, category_id: '3', image_url: null, description: 'Refreshing cola drink' },
-  { _id: '10', name: 'Sprite', price: 2.99, tax_percent: 5, stock: 90, category_id: '3', image_url: null, description: 'Lemon-lime soda' },
-  { _id: '11', name: 'Orange Juice', price: 3.99, tax_percent: 5, stock: 60, category_id: '3', image_url: null, description: 'Fresh squeezed orange juice' },
-  { _id: '12', name: 'Milkshake', price: 4.99, tax_percent: 5, stock: 45, category_id: '3', image_url: null, description: 'Creamy vanilla milkshake' },
-  { _id: '13', name: 'French Fries', price: 3.99, tax_percent: 8, stock: 80, category_id: '4', image_url: null, description: 'Crispy golden fries' },
-  { _id: '14', name: 'Onion Rings', price: 4.49, tax_percent: 8, stock: 55, category_id: '4', image_url: null, description: 'Crunchy breaded onion rings' },
-  { _id: '15', name: 'Chicken Nuggets', price: 5.99, tax_percent: 8, stock: 65, category_id: '4', image_url: null, description: '6 pieces of crispy nuggets' },
-  { _id: '16', name: 'Ice Cream', price: 3.99, tax_percent: 5, stock: 40, category_id: '5', image_url: null, description: 'Creamy vanilla ice cream' },
-  { _id: '17', name: 'Brownie', price: 4.49, tax_percent: 5, stock: 35, category_id: '5', image_url: null, description: 'Chocolate brownie with nuts' },
-  { _id: '18', name: 'Apple Pie', price: 3.99, tax_percent: 5, stock: 30, category_id: '5', image_url: null, description: 'Warm apple pie with cinnamon' },
+  { _id: '1', name: 'iPhone 15 Pro', price: 999.99, tax_percent: 18, stock: 25, category_id: '1', image_url: null, description: 'Latest Apple flagship with A17 Pro chip' },
+  { _id: '2', name: 'Samsung Galaxy S24', price: 899.99, tax_percent: 18, stock: 30, category_id: '1', image_url: null, description: 'AI-powered smartphone with 200MP camera' },
+  { _id: '3', name: 'Google Pixel 8', price: 699.99, tax_percent: 18, stock: 20, category_id: '1', image_url: null, description: 'Pure Android experience with Tensor G3' },
+  { _id: '4', name: 'OnePlus 12', price: 799.99, tax_percent: 18, stock: 35, category_id: '1', image_url: null, description: 'Flagship killer with 100W fast charging' },
+  { _id: '5', name: 'MacBook Air M3', price: 1299.99, tax_percent: 18, stock: 15, category_id: '2', image_url: null, description: 'Ultra-thin laptop with M3 chip' },
+  { _id: '6', name: 'Dell XPS 15', price: 1499.99, tax_percent: 18, stock: 12, category_id: '2', image_url: null, description: 'Premium ultrabook with OLED display' },
+  { _id: '7', name: 'HP Spectre x360', price: 1399.99, tax_percent: 18, stock: 18, category_id: '2', image_url: null, description: '2-in-1 convertible with pen support' },
+  { _id: '8', name: 'Lenovo ThinkPad X1', price: 1199.99, tax_percent: 18, stock: 22, category_id: '2', image_url: null, description: 'Business laptop with legendary keyboard' },
+  { _id: '9', name: 'AirPods Pro 2', price: 249.99, tax_percent: 18, stock: 50, category_id: '3', image_url: null, description: 'Active noise cancellation earbuds' },
+  { _id: '10', name: 'Sony WH-1000XM5', price: 349.99, tax_percent: 18, stock: 28, category_id: '3', image_url: null, description: 'Industry-leading noise cancelling headphones' },
+  { _id: '11', name: 'JBL Flip 6', price: 129.99, tax_percent: 18, stock: 45, category_id: '3', image_url: null, description: 'Portable waterproof Bluetooth speaker' },
+  { _id: '12', name: 'Bose QuietComfort', price: 299.99, tax_percent: 18, stock: 32, category_id: '3', image_url: null, description: 'Legendary comfort with premium sound' },
+  { _id: '13', name: 'USB-C Hub 7-in-1', price: 49.99, tax_percent: 18, stock: 100, category_id: '4', image_url: null, description: 'HDMI, USB-A, SD card, and more' },
+  { _id: '14', name: 'MagSafe Wireless Charger', price: 39.99, tax_percent: 18, stock: 80, category_id: '4', image_url: null, description: '15W fast wireless charging pad' },
+  { _id: '15', name: 'Anker Power Bank 20K', price: 59.99, tax_percent: 18, stock: 65, category_id: '4', image_url: null, description: '20000mAh with 65W fast charging' },
+  { _id: '16', name: 'Apple Watch Ultra 2', price: 799.99, tax_percent: 18, stock: 20, category_id: '5', image_url: null, description: 'Rugged smartwatch for athletes' },
+  { _id: '17', name: 'Samsung Galaxy Watch 6', price: 349.99, tax_percent: 18, stock: 35, category_id: '5', image_url: null, description: 'Health tracking with Wear OS' },
+  { _id: '18', name: 'Fitbit Charge 6', price: 159.99, tax_percent: 18, stock: 40, category_id: '5', image_url: null, description: 'Advanced fitness tracker with GPS' },
+  { _id: '19', name: 'PS5 DualSense Controller', price: 69.99, tax_percent: 18, stock: 55, category_id: '6', image_url: null, description: 'Haptic feedback gaming controller' },
+  { _id: '20', name: 'Xbox Elite Controller 2', price: 179.99, tax_percent: 18, stock: 30, category_id: '6', image_url: null, description: 'Pro-level customizable controller' },
 ];
 
 export default ProductListing;

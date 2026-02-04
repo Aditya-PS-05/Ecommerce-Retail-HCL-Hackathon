@@ -49,7 +49,7 @@ export const ordersApi = createApiInstance(process.env.REACT_APP_ORDERS_API_URL)
 const api = {
   get: async (url, config) => {
     if (url.startsWith('/auth')) {
-      return authApi.get(url.replace('/auth', ''), config);
+      return authApi.get('/api/auth' + url.replace('/auth', ''), config);
     } else if (url.startsWith('/products') || url.startsWith('/search')) {
       return productsApi.get(url, config);
     } else if (url.startsWith('/categories')) {
@@ -63,7 +63,7 @@ const api = {
   },
   post: async (url, data, config) => {
     if (url.startsWith('/auth')) {
-      return authApi.post(url.replace('/auth', ''), data, config);
+      return authApi.post('/api/auth' + url.replace('/auth', ''), data, config);
     } else if (url.startsWith('/products')) {
       return productsApi.post(url, data, config);
     } else if (url.startsWith('/categories')) {
@@ -77,7 +77,7 @@ const api = {
   },
   patch: async (url, data, config) => {
     if (url.startsWith('/auth')) {
-      return authApi.patch(url.replace('/auth', ''), data, config);
+      return authApi.patch('/api/auth' + url.replace('/auth', ''), data, config);
     } else if (url.startsWith('/products')) {
       return productsApi.patch(url, data, config);
     } else if (url.startsWith('/categories')) {
@@ -91,7 +91,7 @@ const api = {
   },
   delete: async (url, config) => {
     if (url.startsWith('/auth')) {
-      return authApi.delete(url.replace('/auth', ''), config);
+      return authApi.delete('/api/auth' + url.replace('/auth', ''), config);
     } else if (url.startsWith('/products')) {
       return productsApi.delete(url, config);
     } else if (url.startsWith('/categories')) {

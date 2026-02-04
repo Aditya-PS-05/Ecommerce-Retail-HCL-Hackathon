@@ -54,7 +54,7 @@ const Navbar = ({ user, cartCount = 0, onLogout }) => {
                   className="flex items-center space-x-2 text-gray-700 hover:text-primary"
                 >
                   <span className="text-xl">👤</span>
-                  <span>{user.name}</span>
+                  <span>{user.name || user.email?.split('@')[0] || 'User'}</span>
                 </button>
                 {isUserMenuOpen && (
                   <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-lg py-2">

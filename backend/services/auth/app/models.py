@@ -1,5 +1,5 @@
 from pydantic import BaseModel, EmailStr, Field
-from typing import Optional
+from typing import Optional, List
 from datetime import datetime
 from enum import Enum
 
@@ -7,6 +7,32 @@ from enum import Enum
 class UserRole(str, Enum):
     ADMIN = "admin"
     CUSTOMER = "customer"
+
+
+class CartItem(BaseModel):
+    product_id: str
+    name: str
+    price: float
+    tax_percent: float = 0
+    quantity: int = 1
+    image_url: Optional[str] = None
+
+
+class CartItemAdd(BaseModel):
+    product_id: str
+    quantity: int = 1
+
+
+class CartItemUpdate(BaseModel):
+    quantity: int = Field(..., ge=1)
+
+
+class CartResponse(BaseModel):
+    items: List[CartItem] = []
+    total_items: int = 0
+    subtotal: float = 0
+    tax: float = 0
+    total: float = 0
 
 
 class UserCreate(BaseModel):

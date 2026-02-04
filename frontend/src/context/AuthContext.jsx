@@ -10,7 +10,16 @@ export const AuthProvider = ({ children }) => {
   // Check for existing token on mount
   useEffect(() => {
     const token = localStorage.getItem('token');
-    if (token) {
+    const savedUser = localStorage.getItem('user');
+    
+    if (token && savedUser) {
+      try {
+        setUser(JSON.parse(savedUser));
+        setLoading(false);
+      } catch {
+        fetchUser();
+      }
+    } else if (token) {
       fetchUser();
     } else {
       setLoading(false);
@@ -31,12 +40,22 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (email, password) => {
     const response = await api.post('/auth/login', { email, password });
-    const { access_token, refresh_token } = response.data;
+    const { access_token, refresh_token, user: userData } = response.data;
     
     localStorage.setItem('token', access_token);
     localStorage.setItem('refreshToken', refresh_token);
     
-    await fetchUser();
+    // Store user data from login response or fetch separately
+    if (userData) {
+      setUser(userData);
+      localStorage.setItem('user', JSON.stringify(userData));
+    } else {
+      // Fallback: store email from login
+      const userInfo = { email };
+      setUser(userInfo);
+      localStorage.setItem('user', JSON.stringify(userInfo));
+    }
+    
     return response.data;
   };
 
@@ -48,6 +67,7 @@ export const AuthProvider = ({ children }) => {
   const logout = () => {
     localStorage.removeItem('token');
     localStorage.removeItem('refreshToken');
+    localStorage.removeItem('user');
     setUser(null);
   };
 

@@ -1,8 +1,10 @@
 import { useState, useEffect, useCallback } from 'react';
 import { ProductCard, Loader, LoadMoreButton } from '../components';
+import { useCart } from '../context';
 import api from '../api/axios';
 
 const Home = () => {
+  const { addToCart } = useCart();
   const [categories, setCategories] = useState([]);
   const [products, setProducts] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState(null);
@@ -92,9 +94,7 @@ const Home = () => {
   };
 
   const handleAddToCart = (product) => {
-    // TODO: Implement cart functionality
-    console.log('Add to cart:', product);
-    alert(`Added "${product.name}" to cart!`);
+    addToCart(product);
   };
 
   return (
@@ -296,32 +296,35 @@ const CategorySection = ({ category, onAddToCart, onViewAll }) => {
 
 // Mock data for demo (when API is not available)
 const mockCategories = [
-  { _id: '1', name: 'Burgers', logo_url: null },
-  { _id: '2', name: 'Pizza', logo_url: null },
-  { _id: '3', name: 'Drinks', logo_url: null },
-  { _id: '4', name: 'Sides', logo_url: null },
-  { _id: '5', name: 'Desserts', logo_url: null },
+  { _id: '1', name: 'Smartphones', logo_url: null },
+  { _id: '2', name: 'Laptops', logo_url: null },
+  { _id: '3', name: 'Audio', logo_url: null },
+  { _id: '4', name: 'Accessories', logo_url: null },
+  { _id: '5', name: 'Wearables', logo_url: null },
+  { _id: '6', name: 'Gaming', logo_url: null },
 ];
 
 const mockProducts = [
-  { _id: '1', name: 'Classic Burger', price: 9.99, tax_percent: 8, stock: 50, category_id: '1', image_url: null },
-  { _id: '2', name: 'Cheese Burger', price: 11.99, tax_percent: 8, stock: 45, category_id: '1', image_url: null },
-  { _id: '3', name: 'Double Burger', price: 14.99, tax_percent: 8, stock: 30, category_id: '1', image_url: null },
-  { _id: '4', name: 'Veggie Burger', price: 10.99, tax_percent: 8, stock: 25, category_id: '1', image_url: null },
-  { _id: '5', name: 'Margherita Pizza', price: 12.99, tax_percent: 8, stock: 40, category_id: '2', image_url: null },
-  { _id: '6', name: 'Pepperoni Pizza', price: 14.99, tax_percent: 8, stock: 35, category_id: '2', image_url: null },
-  { _id: '7', name: 'BBQ Chicken Pizza', price: 15.99, tax_percent: 8, stock: 28, category_id: '2', image_url: null },
-  { _id: '8', name: 'Veggie Pizza', price: 13.99, tax_percent: 8, stock: 32, category_id: '2', image_url: null },
-  { _id: '9', name: 'Coca Cola', price: 2.99, tax_percent: 5, stock: 100, category_id: '3', image_url: null },
-  { _id: '10', name: 'Sprite', price: 2.99, tax_percent: 5, stock: 90, category_id: '3', image_url: null },
-  { _id: '11', name: 'Orange Juice', price: 3.99, tax_percent: 5, stock: 60, category_id: '3', image_url: null },
-  { _id: '12', name: 'Milkshake', price: 4.99, tax_percent: 5, stock: 45, category_id: '3', image_url: null },
-  { _id: '13', name: 'French Fries', price: 3.99, tax_percent: 8, stock: 80, category_id: '4', image_url: null },
-  { _id: '14', name: 'Onion Rings', price: 4.49, tax_percent: 8, stock: 55, category_id: '4', image_url: null },
-  { _id: '15', name: 'Chicken Nuggets', price: 5.99, tax_percent: 8, stock: 65, category_id: '4', image_url: null },
-  { _id: '16', name: 'Ice Cream', price: 3.99, tax_percent: 5, stock: 40, category_id: '5', image_url: null },
-  { _id: '17', name: 'Brownie', price: 4.49, tax_percent: 5, stock: 35, category_id: '5', image_url: null },
-  { _id: '18', name: 'Apple Pie', price: 3.99, tax_percent: 5, stock: 30, category_id: '5', image_url: null },
+  { _id: '1', name: 'iPhone 15 Pro', price: 999.99, tax_percent: 18, stock: 25, category_id: '1', image_url: null },
+  { _id: '2', name: 'Samsung Galaxy S24', price: 899.99, tax_percent: 18, stock: 30, category_id: '1', image_url: null },
+  { _id: '3', name: 'Google Pixel 8', price: 699.99, tax_percent: 18, stock: 20, category_id: '1', image_url: null },
+  { _id: '4', name: 'OnePlus 12', price: 799.99, tax_percent: 18, stock: 35, category_id: '1', image_url: null },
+  { _id: '5', name: 'MacBook Air M3', price: 1299.99, tax_percent: 18, stock: 15, category_id: '2', image_url: null },
+  { _id: '6', name: 'Dell XPS 15', price: 1499.99, tax_percent: 18, stock: 12, category_id: '2', image_url: null },
+  { _id: '7', name: 'HP Spectre x360', price: 1399.99, tax_percent: 18, stock: 18, category_id: '2', image_url: null },
+  { _id: '8', name: 'Lenovo ThinkPad', price: 1199.99, tax_percent: 18, stock: 22, category_id: '2', image_url: null },
+  { _id: '9', name: 'AirPods Pro', price: 249.99, tax_percent: 18, stock: 50, category_id: '3', image_url: null },
+  { _id: '10', name: 'Sony WH-1000XM5', price: 349.99, tax_percent: 18, stock: 28, category_id: '3', image_url: null },
+  { _id: '11', name: 'JBL Flip 6', price: 129.99, tax_percent: 18, stock: 45, category_id: '3', image_url: null },
+  { _id: '12', name: 'Bose QuietComfort', price: 299.99, tax_percent: 18, stock: 32, category_id: '3', image_url: null },
+  { _id: '13', name: 'USB-C Hub 7-in-1', price: 49.99, tax_percent: 18, stock: 100, category_id: '4', image_url: null },
+  { _id: '14', name: 'Wireless Charger', price: 39.99, tax_percent: 18, stock: 80, category_id: '4', image_url: null },
+  { _id: '15', name: 'Power Bank 20000mAh', price: 59.99, tax_percent: 18, stock: 65, category_id: '4', image_url: null },
+  { _id: '16', name: 'Apple Watch Ultra', price: 799.99, tax_percent: 18, stock: 20, category_id: '5', image_url: null },
+  { _id: '17', name: 'Samsung Galaxy Watch', price: 349.99, tax_percent: 18, stock: 35, category_id: '5', image_url: null },
+  { _id: '18', name: 'Fitbit Charge 6', price: 159.99, tax_percent: 18, stock: 40, category_id: '5', image_url: null },
+  { _id: '19', name: 'PS5 Controller', price: 69.99, tax_percent: 18, stock: 55, category_id: '6', image_url: null },
+  { _id: '20', name: 'Xbox Elite Controller', price: 179.99, tax_percent: 18, stock: 30, category_id: '6', image_url: null },
 ];
 
 export default Home;
