@@ -95,3 +95,8 @@ async def refresh_token(token_data: TokenRefresh):
     new_access_token = create_access_token(new_token_data)
     
     return AccessToken(access_token=new_access_token)
+
+
+@router.post("/logout")
+async def logout():
+    return {"message": "Successfully logged out"}
