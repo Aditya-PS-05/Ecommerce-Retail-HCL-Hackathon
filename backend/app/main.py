@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import connect_to_mongo, close_mongo_connection
 from app.config import settings
+from app.routes import auth
 
 
 @asynccontextmanager
@@ -36,3 +37,6 @@ async def root():
 @app.get("/health")
 async def health_check():
     return {"status": "healthy"}
+
+
+app.include_router(auth.router, prefix="/api")
