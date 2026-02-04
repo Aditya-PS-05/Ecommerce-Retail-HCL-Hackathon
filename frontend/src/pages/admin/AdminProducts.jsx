@@ -32,7 +32,8 @@ const AdminProducts = () => {
     const fetchCategories = async () => {
       try {
         const res = await api.get('/categories');
-        setCategories(res.data);
+        const data = res.data;
+        setCategories(Array.isArray(data) ? data : data.categories || mockCategories);
       } catch (err) {
         setCategories(mockCategories);
       }

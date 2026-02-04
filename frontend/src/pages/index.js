@@ -8,4 +8,4 @@ export { default as Cart } from './Cart';
 export { default as Orders } from './Orders';
 
 // Admin Pages
-export { AdminDashboard, AdminProducts, ProductForm } from './admin';
+export { AdminDashboard, AdminProducts, ProductForm, AdminCategories, CategoryForm } from './admin';

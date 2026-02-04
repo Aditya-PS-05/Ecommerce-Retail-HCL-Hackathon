@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth, CartProvider, useCart } from './context';
 import { Navbar, Footer, ProtectedRoute, Loader } from './components';
-import { Home, Landing, ProductListing, Login, Register, ForgotPassword, Cart, Orders, AdminDashboard, AdminProducts, ProductForm } from './pages';
+import { Home, Landing, ProductListing, Login, Register, ForgotPassword, Cart, Orders, AdminDashboard, AdminProducts, ProductForm, AdminCategories, CategoryForm } from './pages';
 import { AdminRoute } from './components';
 import './App.css';
 
@@ -81,33 +81,71 @@ function AppContent() {
         <Route
           path="/admin"
           element={
-            <AdminRoute user={user}>
-              <AdminDashboard />
-            </AdminRoute>
+            <MainLayout user={user} logout={logout}>
+              <AdminRoute user={user}>
+                <AdminDashboard />
+              </AdminRoute>
+            </MainLayout>
           }
         />
         <Route
           path="/admin/products"
           element={
-            <AdminRoute user={user}>
-              <AdminProducts />
-            </AdminRoute>
+            <MainLayout user={user} logout={logout}>
+              <AdminRoute user={user}>
+                <AdminProducts />
+              </AdminRoute>
+            </MainLayout>
           }
         />
         <Route
           path="/admin/products/new"
           element={
-            <AdminRoute user={user}>
-              <ProductForm />
-            </AdminRoute>
+            <MainLayout user={user} logout={logout}>
+              <AdminRoute user={user}>
+                <ProductForm />
+              </AdminRoute>
+            </MainLayout>
           }
         />
         <Route
           path="/admin/products/:id/edit"
           element={
-            <AdminRoute user={user}>
-              <ProductForm />
-            </AdminRoute>
+            <MainLayout user={user} logout={logout}>
+              <AdminRoute user={user}>
+                <ProductForm />
+              </AdminRoute>
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/admin/categories"
+          element={
+            <MainLayout user={user} logout={logout}>
+              <AdminRoute user={user}>
+                <AdminCategories />
+              </AdminRoute>
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/admin/categories/new"
+          element={
+            <MainLayout user={user} logout={logout}>
+              <AdminRoute user={user}>
+                <CategoryForm />
+              </AdminRoute>
+            </MainLayout>
+          }
+        />
+        <Route
+          path="/admin/categories/:id/edit"
+          element={
+            <MainLayout user={user} logout={logout}>
+              <AdminRoute user={user}>
+                <CategoryForm />
+              </AdminRoute>
+            </MainLayout>
           }
         />
       </Routes>

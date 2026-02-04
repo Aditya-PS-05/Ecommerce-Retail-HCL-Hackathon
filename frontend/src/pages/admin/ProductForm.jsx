@@ -26,40 +26,41 @@ const ProductForm = () => {
   });
 
   useEffect(() => {
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get('/categories');
+        const data = res.data;
+        setCategories(Array.isArray(data) ? data : data.categories || mockCategories);
+      } catch (err) {
+        setCategories(mockCategories);
+      }
+    };
+
+    const fetchProduct = async () => {
+      try {
+        const res = await api.get(`/products/${id}`);
+        setForm({
+          name: res.data.name || '',
+          description: res.data.description || '',
+          price: res.data.price?.toString() || '',
+          tax_percent: res.data.tax_percent?.toString() || '8',
+          stock: res.data.stock?.toString() || '',
+          category_id: res.data.category_id || '',
+          image_url: res.data.image_url || '',
+          is_combo: res.data.is_combo || false,
+          is_active: res.data.is_active !== false,
+        });
+      } catch (err) {
+        alert('Failed to load product');
+        navigate('/admin/products');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     fetchCategories();
     if (isEdit) fetchProduct();
-  }, [id]);
-
-  const fetchCategories = async () => {
-    try {
-      const res = await api.get('/categories');
-      setCategories(res.data);
-    } catch (err) {
-      setCategories(mockCategories);
-    }
-  };
-
-  const fetchProduct = async () => {
-    try {
-      const res = await api.get(`/products/${id}`);
-      setForm({
-        name: res.data.name || '',
-        description: res.data.description || '',
-        price: res.data.price?.toString() || '',
-        tax_percent: res.data.tax_percent?.toString() || '8',
-        stock: res.data.stock?.toString() || '',
-        category_id: res.data.category_id || '',
-        image_url: res.data.image_url || '',
-        is_combo: res.data.is_combo || false,
-        is_active: res.data.is_active !== false,
-      });
-    } catch (err) {
-      alert('Failed to load product');
-      navigate('/admin/products');
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [id, isEdit, navigate]);
 
   const handleChange = (e) => {
     const { name, value, type, checked } = e.target;
