@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException, status, Depends, Query
 from datetime import datetime
 from math import ceil
+import uuid
 from bson import ObjectId
 from bson.errors import InvalidId
 from app.models import OrderCreate, OrderResponse, OrderListResponse, OrderItem, OrderStatus, OrderItemCreate
@@ -138,7 +139,11 @@ async def create_order(
             {"$inc": {"stock": -item.quantity}}
         )
     
+    # Generate unique order number
+    order_number = f"ORD-{datetime.utcnow().strftime('%Y%m%d')}-{uuid.uuid4().hex[:8].upper()}"
+    
     order_dict = {
+        "orderNumber": order_number,
         "user_id": current_user["user_id"],
         "items": order_items,
         "subtotal": round(subtotal, 2),
