@@ -49,7 +49,7 @@ export const ordersApi = createApiInstance(process.env.REACT_APP_ORDERS_API_URL)
 const api = {
   get: async (url, config) => {
     if (url.startsWith('/auth')) {
-      return authApi.get('/api/auth' + url.replace('/auth', ''), config);
+      return authApi.get(url.replace('/auth', ''), config);
     } else if (url.startsWith('/products') || url.startsWith('/search')) {
       return productsApi.get(url, config);
     } else if (url.startsWith('/categories')) {

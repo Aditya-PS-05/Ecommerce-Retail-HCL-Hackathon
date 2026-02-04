@@ -155,7 +155,7 @@ async def add_to_cart(
         # Add new item
         cart_items.append({
             "product_id": item.product_id,
-            "name": product.get("name", ""),
+            "name": product.get("title") or product.get("name", ""),
             "price": product.get("price", 0),
             "tax_percent": product.get("tax_percent", 0),
             "quantity": item.quantity,

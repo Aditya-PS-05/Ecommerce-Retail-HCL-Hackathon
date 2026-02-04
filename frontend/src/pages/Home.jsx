@@ -19,11 +19,10 @@ const Home = () => {
   const fetchCategories = async () => {
     try {
       const response = await api.get('/categories');
-      setCategories(response.data);
+      setCategories(response.data.categories || response.data || []);
     } catch (err) {
       console.error('Failed to fetch categories:', err);
-      // Use mock data for demo
-      setCategories(mockCategories);
+      setCategories([]);
     }
   };
 
@@ -38,7 +37,7 @@ const Home = () => {
         ...(selectedCategory && { category_id: selectedCategory }),
       };
       const response = await api.get('/products', { params });
-      const newProducts = response.data.products || response.data;
+      const newProducts = response.data.products || response.data || [];
       
       if (reset) {
         setProducts(newProducts);
@@ -49,21 +48,10 @@ const Home = () => {
       setHasMore(newProducts.length === PRODUCTS_PER_PAGE);
     } catch (err) {
       console.error('Failed to fetch products:', err);
-      // Use mock data for demo
-      const filtered = selectedCategory
-        ? mockProducts.filter((p) => p.category_id === selectedCategory)
-        : mockProducts;
-      
-      const start = (pageNum - 1) * PRODUCTS_PER_PAGE;
-      const newProducts = filtered.slice(start, start + PRODUCTS_PER_PAGE);
-      
       if (reset) {
-        setProducts(newProducts);
-      } else {
-        setProducts((prev) => [...prev, ...newProducts]);
+        setProducts([]);
       }
-      
-      setHasMore(start + PRODUCTS_PER_PAGE < filtered.length);
+      setHasMore(false);
     } finally {
       setLoading(false);
       setLoadingMore(false);
@@ -131,28 +119,31 @@ const Home = () => {
             </button>
             
             {/* Category Buttons */}
-            {categories.map((category) => (
-              <button
-                key={category._id}
-                onClick={() => handleCategoryClick(category._id)}
-                className={`flex-shrink-0 flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all ${
-                  selectedCategory === category._id
-                    ? 'bg-primary text-white shadow-md'
-                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                }`}
-              >
-                {category.logo_url ? (
-                  <img
-                    src={category.logo_url}
-                    alt={category.name}
-                    className="w-6 h-6 rounded-full object-cover"
-                  />
-                ) : (
-                  <span>🏷️</span>
-                )}
-                {category.name}
-              </button>
-            ))}
+            {categories.map((category) => {
+              const catId = category.id || category._id;
+              return (
+                <button
+                  key={catId}
+                  onClick={() => handleCategoryClick(catId)}
+                  className={`flex-shrink-0 flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all ${
+                    selectedCategory === catId
+                      ? 'bg-primary text-white shadow-md'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {category.logo_url ? (
+                    <img
+                      src={category.logo_url}
+                      alt={category.name || category.title}
+                      className="w-6 h-6 rounded-full object-cover"
+                    />
+                  ) : (
+                    <span>🏷️</span>
+                  )}
+                  {category.name || category.title}
+                </button>
+              );
+            })}
           </div>
         </div>
       </section>
@@ -164,7 +155,7 @@ const Home = () => {
           <div className="flex items-center justify-between mb-6">
             <h2 className="text-2xl font-bold text-gray-800">
               {selectedCategory
-                ? categories.find((c) => c._id === selectedCategory)?.name || 'Products'
+                ? categories.find((c) => (c.id || c._id) === selectedCategory)?.name || categories.find((c) => (c.id || c._id) === selectedCategory)?.title || 'Products'
                 : 'All Products'}
             </h2>
             <span className="text-gray-500">
@@ -196,7 +187,7 @@ const Home = () => {
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 {products.map((product) => (
                   <ProductCard
-                    key={product._id}
+                    key={product.id || product._id}
                     product={product}
                     onAddToCart={handleAddToCart}
                   />
@@ -237,23 +228,24 @@ const Home = () => {
 const CategorySection = ({ category, onAddToCart, onViewAll }) => {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const categoryId = category.id || category._id;
 
   useEffect(() => {
     const fetchCategoryProducts = async () => {
-    try {
-      const response = await api.get('/products', {
-        params: { category_id: category._id, limit: 4 },
-      });
-      setProducts(response.data.products || response.data);
-    } catch (err) {
-      // Use mock data
-      setProducts(mockProducts.filter((p) => p.category_id === category._id).slice(0, 4));
-    } finally {
-      setLoading(false);
-    }
-  };
+      try {
+        const response = await api.get('/products', {
+          params: { category_id: categoryId, limit: 4 },
+        });
+        setProducts(response.data.products || response.data || []);
+      } catch (err) {
+        console.error('Failed to fetch category products:', err);
+        setProducts([]);
+      } finally {
+        setLoading(false);
+      }
+    };
     fetchCategoryProducts();
-  }, [category._id]);
+  }, [categoryId]);
 
   if (loading) return null;
   if (products.length === 0) return null;
@@ -265,13 +257,13 @@ const CategorySection = ({ category, onAddToCart, onViewAll }) => {
           {category.logo_url ? (
             <img
               src={category.logo_url}
-              alt={category.name}
+              alt={category.name || category.title}
               className="w-10 h-10 rounded-full object-cover"
             />
           ) : (
             <span className="text-3xl">🏷️</span>
           )}
-          <h3 className="text-2xl font-bold text-gray-800">{category.name}</h3>
+          <h3 className="text-2xl font-bold text-gray-800">{category.name || category.title}</h3>
         </div>
         <button
           onClick={onViewAll}
@@ -284,7 +276,7 @@ const CategorySection = ({ category, onAddToCart, onViewAll }) => {
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6">
         {products.map((product) => (
           <ProductCard
-            key={product._id}
+            key={product.id || product._id}
             product={product}
             onAddToCart={onAddToCart}
           />
@@ -293,38 +285,5 @@ const CategorySection = ({ category, onAddToCart, onViewAll }) => {
     </div>
   );
 };
-
-// Mock data for demo (when API is not available)
-const mockCategories = [
-  { _id: '1', name: 'Smartphones', logo_url: null },
-  { _id: '2', name: 'Laptops', logo_url: null },
-  { _id: '3', name: 'Audio', logo_url: null },
-  { _id: '4', name: 'Accessories', logo_url: null },
-  { _id: '5', name: 'Wearables', logo_url: null },
-  { _id: '6', name: 'Gaming', logo_url: null },
-];
-
-const mockProducts = [
-  { _id: '1', name: 'iPhone 15 Pro', price: 999.99, tax_percent: 18, stock: 25, category_id: '1', image_url: null },
-  { _id: '2', name: 'Samsung Galaxy S24', price: 899.99, tax_percent: 18, stock: 30, category_id: '1', image_url: null },
-  { _id: '3', name: 'Google Pixel 8', price: 699.99, tax_percent: 18, stock: 20, category_id: '1', image_url: null },
-  { _id: '4', name: 'OnePlus 12', price: 799.99, tax_percent: 18, stock: 35, category_id: '1', image_url: null },
-  { _id: '5', name: 'MacBook Air M3', price: 1299.99, tax_percent: 18, stock: 15, category_id: '2', image_url: null },
-  { _id: '6', name: 'Dell XPS 15', price: 1499.99, tax_percent: 18, stock: 12, category_id: '2', image_url: null },
-  { _id: '7', name: 'HP Spectre x360', price: 1399.99, tax_percent: 18, stock: 18, category_id: '2', image_url: null },
-  { _id: '8', name: 'Lenovo ThinkPad', price: 1199.99, tax_percent: 18, stock: 22, category_id: '2', image_url: null },
-  { _id: '9', name: 'AirPods Pro', price: 249.99, tax_percent: 18, stock: 50, category_id: '3', image_url: null },
-  { _id: '10', name: 'Sony WH-1000XM5', price: 349.99, tax_percent: 18, stock: 28, category_id: '3', image_url: null },
-  { _id: '11', name: 'JBL Flip 6', price: 129.99, tax_percent: 18, stock: 45, category_id: '3', image_url: null },
-  { _id: '12', name: 'Bose QuietComfort', price: 299.99, tax_percent: 18, stock: 32, category_id: '3', image_url: null },
-  { _id: '13', name: 'USB-C Hub 7-in-1', price: 49.99, tax_percent: 18, stock: 100, category_id: '4', image_url: null },
-  { _id: '14', name: 'Wireless Charger', price: 39.99, tax_percent: 18, stock: 80, category_id: '4', image_url: null },
-  { _id: '15', name: 'Power Bank 20000mAh', price: 59.99, tax_percent: 18, stock: 65, category_id: '4', image_url: null },
-  { _id: '16', name: 'Apple Watch Ultra', price: 799.99, tax_percent: 18, stock: 20, category_id: '5', image_url: null },
-  { _id: '17', name: 'Samsung Galaxy Watch', price: 349.99, tax_percent: 18, stock: 35, category_id: '5', image_url: null },
-  { _id: '18', name: 'Fitbit Charge 6', price: 159.99, tax_percent: 18, stock: 40, category_id: '5', image_url: null },
-  { _id: '19', name: 'PS5 Controller', price: 69.99, tax_percent: 18, stock: 55, category_id: '6', image_url: null },
-  { _id: '20', name: 'Xbox Elite Controller', price: 179.99, tax_percent: 18, stock: 30, category_id: '6', image_url: null },
-];
 
 export default Home;

@@ -30,17 +30,17 @@ const ProductListing = () => {
     { label: 'Home', path: '/' },
     { label: 'Products', path: '/products' },
     ...(selectedCategory && categories.length > 0
-      ? [{ label: categories.find(c => c._id === selectedCategory)?.name || 'Category' }]
+      ? [{ label: categories.find(c => (c.id || c._id) === selectedCategory)?.name || categories.find(c => (c.id || c._id) === selectedCategory)?.title || 'Category' }]
       : []),
   ];
 
   const fetchCategories = async () => {
     try {
       const response = await api.get('/categories');
-      setCategories(response.data);
+      setCategories(response.data.categories || response.data || []);
     } catch (err) {
       console.error('Failed to fetch categories:', err);
-      setCategories(mockCategories);
+      setCategories([]);
     }
   };
 
@@ -61,43 +61,15 @@ const ProductListing = () => {
       const response = await api.get('/products', { params });
       const data = response.data;
 
-      setProducts(data.products || data);
-      setTotalPages(data.total_pages || Math.ceil((data.total || mockProducts.length) / PRODUCTS_PER_PAGE));
-      setTotalProducts(data.total || mockProducts.length);
+      setProducts(data.products || data || []);
+      setTotalPages(data.total_pages || Math.ceil((data.total || 0) / PRODUCTS_PER_PAGE) || 1);
+      setTotalProducts(data.total || (data.products || data || []).length);
     } catch (err) {
       console.error('Failed to fetch products:', err);
-      // Use mock data for demo
-      let filtered = [...mockProducts];
-      
-      if (selectedCategory) {
-        filtered = filtered.filter(p => p.category_id === selectedCategory);
-      }
-      
-      if (searchQuery) {
-        const query = searchQuery.toLowerCase();
-        filtered = filtered.filter(p => 
-          p.name.toLowerCase().includes(query) ||
-          p.description?.toLowerCase().includes(query)
-        );
-      }
-
-      // Sort
-      filtered.sort((a, b) => {
-        let comparison = 0;
-        if (sortBy === 'price') {
-          comparison = a.price - b.price;
-        } else if (sortBy === 'name') {
-          comparison = a.name.localeCompare(b.name);
-        }
-        return sortOrder === 'desc' ? -comparison : comparison;
-      });
-
-      const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
-      const paginated = filtered.slice(start, start + PRODUCTS_PER_PAGE);
-      
-      setProducts(paginated);
-      setTotalPages(Math.ceil(filtered.length / PRODUCTS_PER_PAGE));
-      setTotalProducts(filtered.length);
+      setProducts([]);
+      setTotalPages(1);
+      setTotalProducts(0);
+      setError('Failed to load products');
     } finally {
       setLoading(false);
     }
@@ -207,24 +179,27 @@ const ProductListing = () => {
                   >
                     All Categories
                   </button>
-                  {categories.map((category) => (
-                    <button
-                      key={category._id}
-                      onClick={() => handleCategoryChange(category._id)}
-                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
-                        selectedCategory === category._id
-                          ? 'bg-primary text-white'
-                          : 'hover:bg-gray-100 text-gray-700'
-                      }`}
-                    >
-                      {category.logo_url ? (
-                        <img src={category.logo_url} alt="" className="w-5 h-5 rounded" />
-                      ) : (
-                        <span>🏷️</span>
-                      )}
-                      {category.name}
-                    </button>
-                  ))}
+                  {categories.map((category) => {
+                    const catId = category.id || category._id;
+                    return (
+                      <button
+                        key={catId}
+                        onClick={() => handleCategoryChange(catId)}
+                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
+                          selectedCategory === catId
+                            ? 'bg-primary text-white'
+                            : 'hover:bg-gray-100 text-gray-700'
+                        }`}
+                      >
+                        {category.logo_url ? (
+                          <img src={category.logo_url} alt="" className="w-5 h-5 rounded" />
+                        ) : (
+                          <span>🏷️</span>
+                        )}
+                        {category.name || category.title}
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 
@@ -279,8 +254,8 @@ const ProductListing = () => {
                 >
                   <option value="">All Categories</option>
                   {categories.map((cat) => (
-                    <option key={cat._id} value={cat._id}>
-                      {cat.name}
+                    <option key={cat.id || cat._id} value={cat.id || cat._id}>
+                      {cat.name || cat.title}
                     </option>
                   ))}
                 </select>
@@ -339,7 +314,7 @@ const ProductListing = () => {
               <div className="flex flex-wrap gap-2 mb-4">
                 {selectedCategory && (
                   <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
-                    {categories.find(c => c._id === selectedCategory)?.name}
+                    {categories.find(c => (c.id || c._id) === selectedCategory)?.name || categories.find(c => (c.id || c._id) === selectedCategory)?.title}
                     <button
                       onClick={() => handleCategoryChange('')}
                       className="hover:text-red-600"
@@ -397,7 +372,7 @@ const ProductListing = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
                   {products.map((product) => (
                     <ProductCard
-                      key={product._id}
+                      key={product.id || product._id}
                       product={product}
                       onAddToCart={handleAddToCart}
                     />
@@ -435,38 +410,5 @@ const ListIcon = () => (
     <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
   </svg>
 );
-
-// Mock data for demo
-const mockCategories = [
-  { _id: '1', name: 'Smartphones', logo_url: null },
-  { _id: '2', name: 'Laptops', logo_url: null },
-  { _id: '3', name: 'Audio', logo_url: null },
-  { _id: '4', name: 'Accessories', logo_url: null },
-  { _id: '5', name: 'Wearables', logo_url: null },
-  { _id: '6', name: 'Gaming', logo_url: null },
-];
-
-const mockProducts = [
-  { _id: '1', name: 'iPhone 15 Pro', price: 999.99, tax_percent: 18, stock: 25, category_id: '1', image_url: null, description: 'Latest Apple flagship with A17 Pro chip' },
-  { _id: '2', name: 'Samsung Galaxy S24', price: 899.99, tax_percent: 18, stock: 30, category_id: '1', image_url: null, description: 'AI-powered smartphone with 200MP camera' },
-  { _id: '3', name: 'Google Pixel 8', price: 699.99, tax_percent: 18, stock: 20, category_id: '1', image_url: null, description: 'Pure Android experience with Tensor G3' },
-  { _id: '4', name: 'OnePlus 12', price: 799.99, tax_percent: 18, stock: 35, category_id: '1', image_url: null, description: 'Flagship killer with 100W fast charging' },
-  { _id: '5', name: 'MacBook Air M3', price: 1299.99, tax_percent: 18, stock: 15, category_id: '2', image_url: null, description: 'Ultra-thin laptop with M3 chip' },
-  { _id: '6', name: 'Dell XPS 15', price: 1499.99, tax_percent: 18, stock: 12, category_id: '2', image_url: null, description: 'Premium ultrabook with OLED display' },
-  { _id: '7', name: 'HP Spectre x360', price: 1399.99, tax_percent: 18, stock: 18, category_id: '2', image_url: null, description: '2-in-1 convertible with pen support' },
-  { _id: '8', name: 'Lenovo ThinkPad X1', price: 1199.99, tax_percent: 18, stock: 22, category_id: '2', image_url: null, description: 'Business laptop with legendary keyboard' },
-  { _id: '9', name: 'AirPods Pro 2', price: 249.99, tax_percent: 18, stock: 50, category_id: '3', image_url: null, description: 'Active noise cancellation earbuds' },
-  { _id: '10', name: 'Sony WH-1000XM5', price: 349.99, tax_percent: 18, stock: 28, category_id: '3', image_url: null, description: 'Industry-leading noise cancelling headphones' },
-  { _id: '11', name: 'JBL Flip 6', price: 129.99, tax_percent: 18, stock: 45, category_id: '3', image_url: null, description: 'Portable waterproof Bluetooth speaker' },
-  { _id: '12', name: 'Bose QuietComfort', price: 299.99, tax_percent: 18, stock: 32, category_id: '3', image_url: null, description: 'Legendary comfort with premium sound' },
-  { _id: '13', name: 'USB-C Hub 7-in-1', price: 49.99, tax_percent: 18, stock: 100, category_id: '4', image_url: null, description: 'HDMI, USB-A, SD card, and more' },
-  { _id: '14', name: 'MagSafe Wireless Charger', price: 39.99, tax_percent: 18, stock: 80, category_id: '4', image_url: null, description: '15W fast wireless charging pad' },
-  { _id: '15', name: 'Anker Power Bank 20K', price: 59.99, tax_percent: 18, stock: 65, category_id: '4', image_url: null, description: '20000mAh with 65W fast charging' },
-  { _id: '16', name: 'Apple Watch Ultra 2', price: 799.99, tax_percent: 18, stock: 20, category_id: '5', image_url: null, description: 'Rugged smartwatch for athletes' },
-  { _id: '17', name: 'Samsung Galaxy Watch 6', price: 349.99, tax_percent: 18, stock: 35, category_id: '5', image_url: null, description: 'Health tracking with Wear OS' },
-  { _id: '18', name: 'Fitbit Charge 6', price: 159.99, tax_percent: 18, stock: 40, category_id: '5', image_url: null, description: 'Advanced fitness tracker with GPS' },
-  { _id: '19', name: 'PS5 DualSense Controller', price: 69.99, tax_percent: 18, stock: 55, category_id: '6', image_url: null, description: 'Haptic feedback gaming controller' },
-  { _id: '20', name: 'Xbox Elite Controller 2', price: 179.99, tax_percent: 18, stock: 30, category_id: '6', image_url: null, description: 'Pro-level customizable controller' },
-];
 
 export default ProductListing;

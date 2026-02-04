@@ -50,12 +50,14 @@ export const CartProvider = ({ children }) => {
 
     try {
       setLoading(true);
+      const productId = product.id || product._id;
+      const productName = product.title || product.name;
       const response = await api.post('/auth/me/cart', {
-        product_id: product._id,
+        product_id: productId,
         quantity
       });
       setCart(response.data);
-      showNotification(`${product.name} added to cart!`, 'success');
+      showNotification(`${productName} added to cart!`, 'success');
       return true;
     } catch (error) {
       const message = error.response?.data?.detail || 'Failed to add to cart';

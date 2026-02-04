@@ -1,16 +1,18 @@
 import { Link } from 'react-router-dom';
 
 const ProductCard = ({ product, onAddToCart }) => {
-  const { _id, name, price, tax_percent, image_url, stock } = product;
-  const finalPrice = price + (price * tax_percent / 100);
+  const { id, _id, title, name, price, tax_percent, image_url, stock } = product;
+  const productId = id || _id;
+  const displayName = title || name;
+  const finalPrice = price + (price * (tax_percent || 0) / 100);
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
       {/* Image */}
-      <Link to={`/products/${_id}`}>
+      <Link to={`/products/${productId}`}>
         <div className="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
           {image_url ? (
-            <img src={image_url} alt={name} className="w-full h-full object-cover" />
+            <img src={image_url} alt={displayName} className="w-full h-full object-cover" />
           ) : (
             <span className="text-6xl">📦</span>
           )}
@@ -19,9 +21,9 @@ const ProductCard = ({ product, onAddToCart }) => {
 
       {/* Content */}
       <div className="p-4">
-        <Link to={`/products/${_id}`}>
+        <Link to={`/products/${productId}`}>
           <h3 className="font-semibold text-lg text-gray-800 hover:text-primary truncate">
-            {name}
+            {displayName}
           </h3>
         </Link>
 
