@@ -1,7 +1,18 @@
+from contextlib import asynccontextmanager
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.database import connect_to_mongo, close_mongo_connection
+
+
+@asynccontextmanager
+async def lifespan(app: FastAPI):
+    connect_to_mongo()
+    yield
+    close_mongo_connection()
+
 
 app = FastAPI(
+    lifespan=lifespan,
     title="Retail Portal API",
     description="E-commerce backend API with JWT authentication and RBAC",
     version="1.0.0",
