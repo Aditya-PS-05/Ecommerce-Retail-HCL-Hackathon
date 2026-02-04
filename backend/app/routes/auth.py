@@ -1,8 +1,8 @@
 from fastapi import APIRouter, HTTPException, status
 from datetime import datetime
 from app.models.user import UserCreate, UserResponse, UserLogin, UserRole
-from app.models.token import Token
-from app.utils.security import hash_password, verify_password, create_access_token, create_refresh_token
+from app.models.token import Token, TokenRefresh, AccessToken
+from app.utils.security import hash_password, verify_password, create_access_token, create_refresh_token, decode_token
 from app.database import get_collection
 
 router = APIRouter(prefix="/auth", tags=["Authentication"])
@@ -68,3 +68,30 @@ async def login(user_data: UserLogin):
         access_token=access_token,
         refresh_token=refresh_token
     )
+
+
+@router.post("/refresh", response_model=AccessToken)
+async def refresh_token(token_data: TokenRefresh):
+    payload = decode_token(token_data.refresh_token)
+    
+    if not payload:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid or expired refresh token"
+        )
+    
+    if payload.get("type") != "refresh":
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token type"
+        )
+    
+    new_token_data = {
+        "sub": payload.get("sub"),
+        "email": payload.get("email"),
+        "role": payload.get("role")
+    }
+    
+    new_access_token = create_access_token(new_token_data)
+    
+    return AccessToken(access_token=new_access_token)
