@@ -6,3 +6,6 @@ export { default as Register } from './Register';
 export { default as ForgotPassword } from './ForgotPassword';
 export { default as Cart } from './Cart';
 export { default as Orders } from './Orders';
+
+// Admin Pages
+export { AdminDashboard, AdminProducts, ProductForm } from './admin';

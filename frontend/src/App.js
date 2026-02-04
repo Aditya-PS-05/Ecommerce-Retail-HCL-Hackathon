@@ -1,7 +1,8 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth, CartProvider, useCart } from './context';
 import { Navbar, Footer, ProtectedRoute, Loader } from './components';
-import { Home, Landing, ProductListing, Login, Register, ForgotPassword, Cart, Orders } from './pages';
+import { Home, Landing, ProductListing, Login, Register, ForgotPassword, Cart, Orders, AdminDashboard, AdminProducts, ProductForm } from './pages';
+import { AdminRoute } from './components';
 import './App.css';
 
 // Cart Notification Component
@@ -73,6 +74,40 @@ function AppContent() {
                 <Orders />
               </ProtectedRoute>
             </MainLayout>
+          }
+        />
+
+        {/* Admin Routes */}
+        <Route
+          path="/admin"
+          element={
+            <AdminRoute user={user}>
+              <AdminDashboard />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products"
+          element={
+            <AdminRoute user={user}>
+              <AdminProducts />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products/new"
+          element={
+            <AdminRoute user={user}>
+              <ProductForm />
+            </AdminRoute>
+          }
+        />
+        <Route
+          path="/admin/products/:id/edit"
+          element={
+            <AdminRoute user={user}>
+              <ProductForm />
+            </AdminRoute>
           }
         />
       </Routes>
