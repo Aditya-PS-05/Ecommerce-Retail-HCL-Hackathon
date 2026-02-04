@@ -49,59 +49,59 @@ export const ordersApi = createApiInstance(process.env.REACT_APP_ORDERS_API_URL)
 const api = {
   get: async (url, config) => {
     if (url.startsWith('/auth')) {
-      return authApi.get(url.replace('/auth', ''), config);
+      return authApi.get('/api/auth' + url.replace('/auth', ''), config);
     } else if (url.startsWith('/products') || url.startsWith('/search')) {
-      return productsApi.get(url, config);
+      return productsApi.get('/api' + url, config);
     } else if (url.startsWith('/categories')) {
-      return categoriesApi.get(url, config);
+      return categoriesApi.get('/api' + url, config);
     } else if (url.startsWith('/inventory')) {
-      return inventoryApi.get(url.replace('/inventory', ''), config);
+      return inventoryApi.get('/api' + url, config);
     } else if (url.startsWith('/orders')) {
-      return ordersApi.get(url.replace('/orders', '/api/orders'), config);
+      return ordersApi.get('/api' + url, config);
     }
-    return productsApi.get(url, config);
+    return productsApi.get('/api' + url, config);
   },
   post: async (url, data, config) => {
     if (url.startsWith('/auth')) {
       return authApi.post('/api/auth' + url.replace('/auth', ''), data, config);
     } else if (url.startsWith('/products')) {
-      return productsApi.post(url, data, config);
+      return productsApi.post('/api' + url, data, config);
     } else if (url.startsWith('/categories')) {
-      return categoriesApi.post(url, data, config);
+      return categoriesApi.post('/api' + url, data, config);
     } else if (url.startsWith('/inventory')) {
-      return inventoryApi.post(url.replace('/inventory', ''), data, config);
+      return inventoryApi.post('/api' + url, data, config);
     } else if (url.startsWith('/orders')) {
-      return ordersApi.post(url.replace('/orders', '/api/orders'), data, config);
+      return ordersApi.post('/api' + url, data, config);
     }
-    return productsApi.post(url, data, config);
+    return productsApi.post('/api' + url, data, config);
   },
   patch: async (url, data, config) => {
     if (url.startsWith('/auth')) {
       return authApi.patch('/api/auth' + url.replace('/auth', ''), data, config);
     } else if (url.startsWith('/products')) {
-      return productsApi.patch(url, data, config);
+      return productsApi.patch('/api' + url, data, config);
     } else if (url.startsWith('/categories')) {
-      return categoriesApi.patch(url, data, config);
+      return categoriesApi.patch('/api' + url, data, config);
     } else if (url.startsWith('/inventory')) {
-      return inventoryApi.patch(url.replace('/inventory', ''), data, config);
+      return inventoryApi.patch('/api' + url, data, config);
     } else if (url.startsWith('/orders')) {
-      return ordersApi.patch(url.replace('/orders', '/api/orders'), data, config);
+      return ordersApi.patch('/api' + url, data, config);
     }
-    return productsApi.patch(url, data, config);
+    return productsApi.patch('/api' + url, data, config);
   },
   delete: async (url, config) => {
     if (url.startsWith('/auth')) {
       return authApi.delete('/api/auth' + url.replace('/auth', ''), config);
     } else if (url.startsWith('/products')) {
-      return productsApi.delete(url, config);
+      return productsApi.delete('/api' + url, config);
     } else if (url.startsWith('/categories')) {
-      return categoriesApi.delete(url, config);
+      return categoriesApi.delete('/api' + url, config);
     } else if (url.startsWith('/inventory')) {
-      return inventoryApi.delete(url.replace('/inventory', ''), config);
+      return inventoryApi.delete('/api' + url, config);
     } else if (url.startsWith('/orders')) {
-      return ordersApi.delete(url.replace('/orders', '/api/orders'), config);
+      return ordersApi.delete('/api' + url, config);
     }
-    return productsApi.delete(url, config);
+    return productsApi.delete('/api' + url, config);
   },
 };
 
