@@ -1,0 +1,133 @@
+# Frontend TODO - Retail Portal (React SPA)
+
+## 🔧 Project Setup
+- [x] Initialize React app (Vite or CRA)
+- [x] Install dependencies (axios, react-router-dom, etc.)
+- [x] Setup folder structure
+- [x] Configure environment variables (API_URL)
+- [x] Setup Axios instance with base URL & interceptors
+
+## 🎨 UI Components (Reusable)
+- [ ] <Navbar /> - Navigation with logo, search, cart icon, user menu
+- [ ] <Footer /> - Footer component
+- [ ] <ProductCard /> - Product display card
+- [ ] <CategoryCard /> - Category display card
+- [ ] <SearchBar /> - Fuzzy search input
+- [ ] <Breadcrumb /> - Breadcrumb navigation
+- [ ] <Loader /> - Loading spinner
+- [ ] <Pagination /> - Pagination controls
+- [ ] <LoadMoreButton /> - Lazy loading button
+- [ ] <Modal /> - Reusable modal component
+- [ ] <ProtectedRoute /> - Route guard for auth
+- [ ] <AdminRoute /> - Route guard for admin only
+
+## 🔐 Authentication Pages (Priority: HIGH)
+### Pages
+- [ ] /login - Login page
+- [ ] /register - Sign-up page
+
+### Features
+- [ ] Login form with validation
+- [ ] Register form with validation
+- [ ] Store JWT token in localStorage/cookies
+- [ ] Auth Context for global auth state
+- [ ] Auto-redirect after login
+- [ ] Logout functionality
+
+## 🏠 Home Page (Priority: HIGH)
+- [ ] / - Home page with category-wise product listing
+- [ ] McDonald's style layout (categories as tabs/sections)
+- [ ] Display products under each category
+- [ ] Lazy loading ("Load More" button)
+- [ ] Category filter/tabs
+
+## 📦 Product Pages
+### Product Listing
+- [ ] /products - All products with pagination
+- [ ] Filter by category
+- [ ] Sort by price/name
+- [ ] Search integration
+
+### Product Detail
+- [ ] /products/:id - Single product page
+- [ ] Display product info (title, description, price, tax)
+- [ ] Product image display
+- [ ] Add-on options selection
+- [ ] Combo products display
+- [ ] "Add to Cart" button
+- [ ] Breadcrumb navigation
+
+## 🔍 Search & Navigation
+- [ ] /search?q= - Search results page
+- [ ] Fuzzy search implementation
+- [ ] Search by product name
+- [ ] Search by category name
+- [ ] Breadcrumb on all pages
+
+## 🛒 Cart Page
+- [ ] /cart - Shopping cart page
+- [ ] Display cart items
+- [ ] Update quantity
+- [ ] Remove item
+- [ ] Calculate subtotal + tax
+- [ ] Display total
+- [ ] "Proceed to Checkout" button
+- [ ] Cart Context for global cart state
+- [ ] Persist cart in localStorage
+
+## 📋 Order Pages (Priority: HIGH)
+### Checkout
+- [ ] /checkout - Checkout page
+- [ ] Order summary
+- [ ] Place order button
+- [ ] Order confirmation
+
+### Order History
+- [ ] /orders - Order history page
+- [ ] List all past orders
+- [ ] Order status display
+- [ ] "Re-order" button (one-click)
+- [ ] View order details
+
+## 👨‍💼 Admin Panel (Priority: HIGH)
+### Dashboard
+- [ ] /admin - Admin dashboard
+- [ ] Overview stats (products, orders, users)
+
+### Product Management
+- [ ] /admin/products - List all products (paginated)
+- [ ] /admin/products/new - Create new product form
+- [ ] /admin/products/:id/edit - Edit product form
+- [ ] Image upload functionality
+- [ ] Delete product
+
+### Category Management
+- [ ] /admin/categories - List all categories
+- [ ] /admin/categories/new - Create category form
+- [ ] /admin/categories/:id/edit - Edit category form
+- [ ] Logo upload
+- [ ] Delete category
+
+### Inventory Management
+- [ ] /admin/inventory - Stock levels page
+- [ ] Update stock quantity
+- [ ] Low stock alerts/highlights
+
+### Order Management
+- [ ] /admin/orders - All orders list
+- [ ] View order details
+- [ ] Update order status
+
+## ⚡ UX Features (Priority: HIGH)
+- [ ] Lazy loading for product lists ("Load More")
+- [ ] Pagination for admin tables
+- [ ] Loading states on all API calls
+- [ ] Error states with retry option
+- [ ] Toast notifications for actions
+- [ ] Fast/crispy UI (minimize re-renders)
+- [ ] Responsive design (mobile-friendly)
+
+## ❌ Error Handling
+- [ ] Global error boundary
+- [ ] 404 Not Found page
+- [ ] API error handli…
