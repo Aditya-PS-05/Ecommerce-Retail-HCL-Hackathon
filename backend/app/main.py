@@ -3,7 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.database import connect_to_mongo, close_mongo_connection
 from app.config import settings
-from app.routes import auth, users
+from app.routes import auth, users, products, categories
 
 
 @asynccontextmanager
@@ -41,3 +41,5 @@ async def health_check():
 
 app.include_router(auth.router, prefix="/api")
 app.include_router(users.router, prefix="/api")
+app.include_router(products.router, prefix="/api")
+app.include_router(categories.router, prefix="/api")
