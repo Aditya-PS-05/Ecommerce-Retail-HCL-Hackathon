@@ -352,7 +352,18 @@ const ProductListing = () => {
                   Retry
                 </button>
               </div>
-            ) : products.length === 0 ? (
+            ) : (() => {
+              // Filter products by search query on frontend
+              const filteredProducts = searchQuery
+                ? products.filter((p) => {
+                    const title = (p.title || p.name || '').toLowerCase();
+                    const description = (p.description || '').toLowerCase();
+                    const query = searchQuery.toLowerCase();
+                    return title.includes(query) || description.includes(query);
+                  })
+                : products;
+
+              return filteredProducts.length === 0 ? (
               <div className="text-center py-12 bg-white rounded-lg shadow-sm">
                 <span className="text-6xl mb-4 block">🔍</span>
                 <h3 className="text-xl font-semibold text-gray-800 mb-2">No products found</h3>
@@ -370,7 +381,7 @@ const ProductListing = () => {
               <>
                 {/* Product Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
-                  {products.map((product) => (
+                  {filteredProducts.map((product) => (
                     <ProductCard
                       key={product.id || product._id}
                       product={product}
@@ -380,7 +391,7 @@ const ProductListing = () => {
                 </div>
 
                 {/* Pagination */}
-                {totalPages > 1 && (
+                {totalPages > 1 && !searchQuery && (
                   <div className="mt-8">
                     <Pagination
                       currentPage={currentPage}
@@ -390,7 +401,8 @@ const ProductListing = () => {
                   </div>
                 )}
               </>
-            )}
+            );
+            })()}
           </main>
         </div>
       </div>
