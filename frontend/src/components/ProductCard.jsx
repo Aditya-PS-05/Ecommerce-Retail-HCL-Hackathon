@@ -1,10 +1,14 @@
 import { Link } from 'react-router-dom';
+import { useCart } from '../context';
 
 const ProductCard = ({ product, onAddToCart }) => {
+  const { cart } = useCart();
   const { id, _id, title, name, price, tax_percent, image_url, stock } = product;
   const productId = id || _id;
   const displayName = title || name;
   const finalPrice = price + (price * (tax_percent || 0) / 100);
+  
+  const isInCart = cart.items.some(item => item.product_id === productId);
 
   return (
     <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
@@ -42,14 +46,16 @@ const ProductCard = ({ product, onAddToCart }) => {
         {/* Add to Cart Button */}
         <button
           onClick={() => onAddToCart(product)}
-          disabled={stock === 0}
+          disabled={stock === 0 || isInCart}
           className={`w-full mt-4 py-2 rounded-lg font-semibold transition-colors ${
             stock === 0
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+              : isInCart
+              ? 'bg-green-500 text-white cursor-default'
               : 'bg-primary text-white hover:bg-red-600'
           }`}
         >
-          {stock === 0 ? 'Out of Stock' : 'Add to Cart'}
+          {stock === 0 ? 'Out of Stock' : isInCart ? '✓ Added to Cart' : 'Add to Cart'}
         </button>
       </div>
     </div>
