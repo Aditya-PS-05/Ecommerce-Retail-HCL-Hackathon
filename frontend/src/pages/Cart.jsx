@@ -1,13 +1,12 @@
 import { useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { useCart, useAuth } from '../context';
 import { Loader } from '../components';
 import api from '../api/axios';
 
 const Cart = () => {
   const { cart, loading, updateQuantity, removeFromCart, clearCart } = useCart();
-  const { user, isAuthenticated } = useAuth();
-  const navigate = useNavigate();
+  const { isAuthenticated } = useAuth();
   
   const [checkoutLoading, setCheckoutLoading] = useState(false);
   const [orderSuccess, setOrderSuccess] = useState(null);

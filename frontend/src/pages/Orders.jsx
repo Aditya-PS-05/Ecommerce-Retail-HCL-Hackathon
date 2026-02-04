@@ -13,12 +13,26 @@ const Orders = () => {
   const [totalPages, setTotalPages] = useState(1);
 
   useEffect(() => {
+    const fetchOrders = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get(`/orders?page=${page}&limit=10`);
+        setOrders(response.data.orders);
+        setTotalPages(response.data.total_pages);
+        setError(null);
+      } catch (err) {
+        setError(err.response?.data?.detail || 'Failed to fetch orders');
+      } finally {
+        setLoading(false);
+      }
+    };
+
     if (isAuthenticated) {
       fetchOrders();
     }
   }, [isAuthenticated, page]);
 
-  const fetchOrders = async () => {
+  const refetchOrders = async () => {
     try {
       setLoading(true);
       const response = await api.get(`/orders?page=${page}&limit=10`);
@@ -95,7 +109,7 @@ const Orders = () => {
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Error</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
-            onClick={fetchOrders}
+            onClick={refetchOrders}
             className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-red-600"
           >
             Retry
