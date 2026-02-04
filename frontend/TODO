@@ -23,16 +23,17 @@
 
 ## 🔐 Authentication Pages (Priority: HIGH)
 ### Pages
-- [ ] /login - Login page
-- [ ] /register - Sign-up page
+- [x] /login - Login page
+- [x] /register - Sign-up page
+- [x] /forgot-password - Forgot password page
 
-### Featurescd
-- [ ] Login form with validation
-- [ ] Register form with validation
-- [ ] Store JWT token in localStorage/cookies
-- [ ] Auth Context for global auth state
-- [ ] Auto-redirect after login
-- [ ] Logout functionality
+### Features
+- [x] Login form with validation
+- [x] Register form with validation
+- [x] Store JWT token in localStorage/cookies
+- [x] Auth Context for global auth state
+- [x] Auto-redirect after login
+- [x] Logout functionality
 
 ## 🏠 Home Page (Priority: HIGH)
 - [ ] / - Home page with category-wise product listing
