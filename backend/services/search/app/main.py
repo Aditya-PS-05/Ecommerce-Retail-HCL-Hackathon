@@ -3,6 +3,7 @@ from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from common.database import connect_to_mongo, close_mongo_connection
 from common.config import settings
+from common.errors import setup_exception_handlers
 from app.routes import router
 
 
@@ -19,6 +20,8 @@ app = FastAPI(
     description="Search microservice for Retail Portal",
     version="1.0.0",
 )
+
+setup_exception_handlers(app)
 
 app.add_middleware(
     CORSMiddleware,
