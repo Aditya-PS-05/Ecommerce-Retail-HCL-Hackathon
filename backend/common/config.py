@@ -5,8 +5,7 @@ load_dotenv()
 
 
 class Settings:
-    MONGO_URI: str = os.getenv("MONGO_URI", "mongodb://localhost:27017")
-    DATABASE_NAME: str = os.getenv("DATABASE_NAME", "retail_portal")
+    MONGO_URI: str = os.getenv("MONGO_URI")
     
     JWT_SECRET: str = os.getenv("JWT_SECRET", "your-super-secret-key")
     JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
