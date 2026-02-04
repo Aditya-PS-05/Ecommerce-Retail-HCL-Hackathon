@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { ProductCard, CategoryCard, Loader, LoadMoreButton } from '../components';
+import { useState, useEffect, useCallback } from 'react';
+import { ProductCard, Loader, LoadMoreButton } from '../components';
 import api from '../api/axios';
 
 const Home = () => {
@@ -10,22 +10,9 @@ const Home = () => {
   const [loadingMore, setLoadingMore] = useState(false);
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
-  const [error, setError] = useState(null);
+  const [error] = useState(null);
 
   const PRODUCTS_PER_PAGE = 8;
-
-  // Fetch categories on mount
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  // Fetch products when category changes
-  useEffect(() => {
-    setPage(1);
-    setProducts([]);
-    setHasMore(true);
-    fetchProducts(1, true);
-  }, [selectedCategory]);
 
   const fetchCategories = async () => {
     try {
@@ -38,7 +25,7 @@ const Home = () => {
     }
   };
 
-  const fetchProducts = async (pageNum, reset = false) => {
+  const fetchProducts = useCallback(async (pageNum, reset = false) => {
     if (reset) setLoading(true);
     else setLoadingMore(true);
 
@@ -79,7 +66,20 @@ const Home = () => {
       setLoading(false);
       setLoadingMore(false);
     }
-  };
+  }, [selectedCategory]);
+
+  // Fetch categories on mount
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // Fetch products when category changes
+  useEffect(() => {
+    setPage(1);
+    setProducts([]);
+    setHasMore(true);
+    fetchProducts(1, true);
+  }, [selectedCategory, fetchProducts]);
 
   const handleLoadMore = () => {
     const nextPage = page + 1;
@@ -239,10 +239,7 @@ const CategorySection = ({ category, onAddToCart, onViewAll }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    fetchCategoryProducts();
-  }, [category._id]);
-
-  const fetchCategoryProducts = async () => {
+    const fetchCategoryProducts = async () => {
     try {
       const response = await api.get('/products', {
         params: { category_id: category._id, limit: 4 },
@@ -255,6 +252,8 @@ const CategorySection = ({ category, onAddToCart, onViewAll }) => {
       setLoading(false);
     }
   };
+    fetchCategoryProducts();
+  }, [category._id]);
 
   if (loading) return null;
   if (products.length === 0) return null;

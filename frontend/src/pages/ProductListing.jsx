@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from 'react';
+import { useState, useEffect, useCallback } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { ProductCard, Loader, Pagination, Breadcrumb, SearchBar } from '../components';
 import api from '../api/axios';
@@ -32,16 +32,6 @@ const ProductListing = () => {
       : []),
   ];
 
-  // Fetch categories on mount
-  useEffect(() => {
-    fetchCategories();
-  }, []);
-
-  // Fetch products when filters change
-  useEffect(() => {
-    fetchProducts();
-  }, [currentPage, selectedCategory, sortBy, sortOrder, searchQuery]);
-
   const fetchCategories = async () => {
     try {
       const response = await api.get('/categories');
@@ -52,7 +42,7 @@ const ProductListing = () => {
     }
   };
 
-  const fetchProducts = async () => {
+  const fetchProducts = useCallback(async () => {
     setLoading(true);
     setError(null);
 
@@ -109,7 +99,17 @@ const ProductListing = () => {
     } finally {
       setLoading(false);
     }
-  };
+  }, [currentPage, selectedCategory, sortBy, sortOrder, searchQuery]);
+
+  // Fetch categories on mount
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // Fetch products when filters change
+  useEffect(() => {
+    fetchProducts();
+  }, [fetchProducts]);
 
   // Update URL params
   const updateParams = (updates) => {
