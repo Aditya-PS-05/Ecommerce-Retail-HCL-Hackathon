@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context';
 import { Navbar, Footer, ProtectedRoute, Loader } from './components';
-import { Login, Register, ForgotPassword } from './pages';
+import { Home, Login, Register, ForgotPassword } from './pages';
 import './App.css';
 
 // Main App Content with Auth
