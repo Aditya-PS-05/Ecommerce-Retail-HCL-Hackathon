@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context';
 import { Navbar, Footer, ProtectedRoute, Loader } from './components';
-import { Home, Login, Register, ForgotPassword } from './pages';
+import { Home, ProductListing, Login, Register, ForgotPassword } from './pages';
 import './App.css';
 
 // Main App Content with Auth
@@ -24,6 +24,7 @@ function AppContent() {
         <Routes>
           {/* Public Routes */}
           <Route path="/" element={<Home />} />
+          <Route path="/products" element={<ProductListing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
           <Route path="/forgot-password" element={<ForgotPassword />} />
@@ -52,16 +53,6 @@ function App() {
         <AppContent />
       </AuthProvider>
     </Router>
-  );
-}
-
-// Temporary Home component
-function Home() {
-  return (
-    <div className="max-w-7xl mx-auto px-4 py-8">
-      <h1 className="text-3xl font-bold text-gray-800 mb-4">Welcome to RetailHub</h1>
-      <p className="text-gray-600">Your one-stop shop for everything!</p>
-    </div>
   );
 }
 

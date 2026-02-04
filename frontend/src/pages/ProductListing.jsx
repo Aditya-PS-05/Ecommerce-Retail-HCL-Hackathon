@@ -1,0 +1,469 @@
+import { useState, useEffect, useMemo } from 'react';
+import { useSearchParams } from 'react-router-dom';
+import { ProductCard, Loader, Pagination, Breadcrumb, SearchBar } from '../components';
+import api from '../api/axios';
+
+const ProductListing = () => {
+  const [searchParams, setSearchParams] = useSearchParams();
+  
+  // State
+  const [products, setProducts] = useState([]);
+  const [categories, setCategories] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalProducts, setTotalProducts] = useState(0);
+
+  // URL Params
+  const currentPage = parseInt(searchParams.get('page')) || 1;
+  const selectedCategory = searchParams.get('category') || '';
+  const sortBy = searchParams.get('sort') || 'name';
+  const sortOrder = searchParams.get('order') || 'asc';
+  const searchQuery = searchParams.get('q') || '';
+
+  const PRODUCTS_PER_PAGE = 12;
+
+  // Breadcrumb items
+  const breadcrumbItems = [
+    { label: 'Home', path: '/' },
+    { label: 'Products', path: '/products' },
+    ...(selectedCategory && categories.length > 0
+      ? [{ label: categories.find(c => c._id === selectedCategory)?.name || 'Category' }]
+      : []),
+  ];
+
+  // Fetch categories on mount
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  // Fetch products when filters change
+  useEffect(() => {
+    fetchProducts();
+  }, [currentPage, selectedCategory, sortBy, sortOrder, searchQuery]);
+
+  const fetchCategories = async () => {
+    try {
+      const response = await api.get('/categories');
+      setCategories(response.data);
+    } catch (err) {
+      console.error('Failed to fetch categories:', err);
+      setCategories(mockCategories);
+    }
+  };
+
+  const fetchProducts = async () => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      const params = {
+        page: currentPage,
+        limit: PRODUCTS_PER_PAGE,
+        sort: sortBy,
+        order: sortOrder,
+        ...(selectedCategory && { category_id: selectedCategory }),
+        ...(searchQuery && { search: searchQuery }),
+      };
+
+      const response = await api.get('/products', { params });
+      const data = response.data;
+
+      setProducts(data.products || data);
+      setTotalPages(data.total_pages || Math.ceil((data.total || mockProducts.length) / PRODUCTS_PER_PAGE));
+      setTotalProducts(data.total || mockProducts.length);
+    } catch (err) {
+      console.error('Failed to fetch products:', err);
+      // Use mock data for demo
+      let filtered = [...mockProducts];
+      
+      if (selectedCategory) {
+        filtered = filtered.filter(p => p.category_id === selectedCategory);
+      }
+      
+      if (searchQuery) {
+        const query = searchQuery.toLowerCase();
+        filtered = filtered.filter(p => 
+          p.name.toLowerCase().includes(query) ||
+          p.description?.toLowerCase().includes(query)
+        );
+      }
+
+      // Sort
+      filtered.sort((a, b) => {
+        let comparison = 0;
+        if (sortBy === 'price') {
+          comparison = a.price - b.price;
+        } else if (sortBy === 'name') {
+          comparison = a.name.localeCompare(b.name);
+        }
+        return sortOrder === 'desc' ? -comparison : comparison;
+      });
+
+      const start = (currentPage - 1) * PRODUCTS_PER_PAGE;
+      const paginated = filtered.slice(start, start + PRODUCTS_PER_PAGE);
+      
+      setProducts(paginated);
+      setTotalPages(Math.ceil(filtered.length / PRODUCTS_PER_PAGE));
+      setTotalProducts(filtered.length);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // Update URL params
+  const updateParams = (updates) => {
+    const newParams = new URLSearchParams(searchParams);
+    
+    Object.entries(updates).forEach(([key, value]) => {
+      if (value) {
+        newParams.set(key, value);
+      } else {
+        newParams.delete(key);
+      }
+    });
+
+    // Reset to page 1 when filters change (except when changing page itself)
+    if (!('page' in updates)) {
+      newParams.set('page', '1');
+    }
+
+    setSearchParams(newParams);
+  };
+
+  const handlePageChange = (page) => {
+    updateParams({ page: page.toString() });
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCategoryChange = (categoryId) => {
+    updateParams({ category: categoryId });
+  };
+
+  const handleSortChange = (e) => {
+    const [sort, order] = e.target.value.split('-');
+    updateParams({ sort, order });
+  };
+
+  const handleSearch = (query) => {
+    updateParams({ q: query });
+  };
+
+  const handleAddToCart = (product) => {
+    // TODO: Implement cart functionality
+    console.log('Add to cart:', product);
+    alert(`Added "${product.name}" to cart!`);
+  };
+
+  const clearFilters = () => {
+    setSearchParams({ page: '1' });
+  };
+
+  const hasActiveFilters = selectedCategory || searchQuery || sortBy !== 'name' || sortOrder !== 'asc';
+
+  return (
+    <div className="min-h-screen bg-gray-50">
+      {/* Header Section */}
+      <div className="bg-white shadow-sm">
+        <div className="max-w-7xl mx-auto px-4 py-4">
+          <Breadcrumb items={breadcrumbItems} />
+          <h1 className="text-3xl font-bold text-gray-800 mt-2">Products</h1>
+        </div>
+      </div>
+
+      <div className="max-w-7xl mx-auto px-4 py-6">
+        <div className="flex flex-col lg:flex-row gap-6">
+          {/* Sidebar Filters - Desktop */}
+          <aside className="hidden lg:block w-64 flex-shrink-0">
+            <div className="bg-white rounded-lg shadow-sm p-4 sticky top-24">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4">Filters</h2>
+              
+              {/* Search */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Search
+                </label>
+                <SearchBar
+                  value={searchQuery}
+                  onSearch={handleSearch}
+                  placeholder="Search products..."
+                  className="w-full"
+                />
+              </div>
+
+              {/* Categories */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Category
+                </label>
+                <div className="space-y-2">
+                  <button
+                    onClick={() => handleCategoryChange('')}
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                      !selectedCategory
+                        ? 'bg-primary text-white'
+                        : 'hover:bg-gray-100 text-gray-700'
+                    }`}
+                  >
+                    All Categories
+                  </button>
+                  {categories.map((category) => (
+                    <button
+                      key={category._id}
+                      onClick={() => handleCategoryChange(category._id)}
+                      className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
+                        selectedCategory === category._id
+                          ? 'bg-primary text-white'
+                          : 'hover:bg-gray-100 text-gray-700'
+                      }`}
+                    >
+                      {category.logo_url ? (
+                        <img src={category.logo_url} alt="" className="w-5 h-5 rounded" />
+                      ) : (
+                        <span>🏷️</span>
+                      )}
+                      {category.name}
+                    </button>
+                  ))}
+                </div>
+              </div>
+
+              {/* Sort */}
+              <div className="mb-6">
+                <label className="block text-sm font-medium text-gray-700 mb-2">
+                  Sort By
+                </label>
+                <select
+                  value={`${sortBy}-${sortOrder}`}
+                  onChange={handleSortChange}
+                  className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent"
+                >
+                  <option value="name-asc">Name (A-Z)</option>
+                  <option value="name-desc">Name (Z-A)</option>
+                  <option value="price-asc">Price (Low to High)</option>
+                  <option value="price-desc">Price (High to Low)</option>
+                </select>
+              </div>
+
+              {/* Clear Filters */}
+              {hasActiveFilters && (
+                <button
+                  onClick={clearFilters}
+                  className="w-full px-4 py-2 text-sm text-primary border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+                >
+                  Clear All Filters
+                </button>
+              )}
+            </div>
+          </aside>
+
+          {/* Main Content */}
+          <main className="flex-1">
+            {/* Mobile Filters */}
+            <div className="lg:hidden mb-4 space-y-3">
+              {/* Search Bar */}
+              <SearchBar
+                value={searchQuery}
+                onSearch={handleSearch}
+                placeholder="Search products..."
+                className="w-full"
+              />
+
+              {/* Filter Row */}
+              <div className="flex gap-2 overflow-x-auto pb-2 scrollbar-hide">
+                {/* Category Dropdown */}
+                <select
+                  value={selectedCategory}
+                  onChange={(e) => handleCategoryChange(e.target.value)}
+                  className="flex-shrink-0 px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm"
+                >
+                  <option value="">All Categories</option>
+                  {categories.map((cat) => (
+                    <option key={cat._id} value={cat._id}>
+                      {cat.name}
+                    </option>
+                  ))}
+                </select>
+
+                {/* Sort Dropdown */}
+                <select
+                  value={`${sortBy}-${sortOrder}`}
+                  onChange={handleSortChange}
+                  className="flex-shrink-0 px-4 py-2 border border-gray-300 rounded-lg bg-white text-sm"
+                >
+                  <option value="name-asc">Name (A-Z)</option>
+                  <option value="name-desc">Name (Z-A)</option>
+                  <option value="price-asc">Price ↑</option>
+                  <option value="price-desc">Price ↓</option>
+                </select>
+
+                {/* Clear Button */}
+                {hasActiveFilters && (
+                  <button
+                    onClick={clearFilters}
+                    className="flex-shrink-0 px-4 py-2 text-primary border border-primary rounded-lg text-sm"
+                  >
+                    Clear
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Results Header */}
+            <div className="flex items-center justify-between mb-4">
+              <p className="text-gray-600">
+                {loading ? (
+                  'Loading...'
+                ) : (
+                  <>
+                    Showing <span className="font-medium">{products.length}</span> of{' '}
+                    <span className="font-medium">{totalProducts}</span> products
+                  </>
+                )}
+              </p>
+              
+              {/* View Toggle - Desktop */}
+              <div className="hidden lg:flex items-center gap-2">
+                <span className="text-sm text-gray-500">View:</span>
+                <button className="p-2 rounded bg-primary text-white">
+                  <GridIcon />
+                </button>
+                <button className="p-2 rounded bg-gray-200 text-gray-600 hover:bg-gray-300">
+                  <ListIcon />
+                </button>
+              </div>
+            </div>
+
+            {/* Active Filters Tags */}
+            {hasActiveFilters && (
+              <div className="flex flex-wrap gap-2 mb-4">
+                {selectedCategory && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
+                    {categories.find(c => c._id === selectedCategory)?.name}
+                    <button
+                      onClick={() => handleCategoryChange('')}
+                      className="hover:text-red-600"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+                {searchQuery && (
+                  <span className="inline-flex items-center gap-1 px-3 py-1 bg-primary/10 text-primary rounded-full text-sm">
+                    Search: "{searchQuery}"
+                    <button
+                      onClick={() => handleSearch('')}
+                      className="hover:text-red-600"
+                    >
+                      ×
+                    </button>
+                  </span>
+                )}
+              </div>
+            )}
+
+            {/* Loading State */}
+            {loading ? (
+              <div className="flex justify-center py-12">
+                <Loader size="lg" text="Loading products..." />
+              </div>
+            ) : error ? (
+              <div className="text-center py-12">
+                <p className="text-red-500 mb-4">{error}</p>
+                <button
+                  onClick={fetchProducts}
+                  className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-red-600"
+                >
+                  Retry
+                </button>
+              </div>
+            ) : products.length === 0 ? (
+              <div className="text-center py-12 bg-white rounded-lg shadow-sm">
+                <span className="text-6xl mb-4 block">🔍</span>
+                <h3 className="text-xl font-semibold text-gray-800 mb-2">No products found</h3>
+                <p className="text-gray-500 mb-4">
+                  Try adjusting your filters or search query
+                </p>
+                <button
+                  onClick={clearFilters}
+                  className="px-6 py-2 bg-primary text-white rounded-lg hover:bg-red-600"
+                >
+                  Clear Filters
+                </button>
+              </div>
+            ) : (
+              <>
+                {/* Product Grid */}
+                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6">
+                  {products.map((product) => (
+                    <ProductCard
+                      key={product._id}
+                      product={product}
+                      onAddToCart={handleAddToCart}
+                    />
+                  ))}
+                </div>
+
+                {/* Pagination */}
+                {totalPages > 1 && (
+                  <div className="mt-8">
+                    <Pagination
+                      currentPage={currentPage}
+                      totalPages={totalPages}
+                      onPageChange={handlePageChange}
+                    />
+                  </div>
+                )}
+              </>
+            )}
+          </main>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+// Icons
+const GridIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path d="M5 3a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2V5a2 2 0 00-2-2H5zM5 11a2 2 0 00-2 2v2a2 2 0 002 2h2a2 2 0 002-2v-2a2 2 0 00-2-2H5zM11 5a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V5zM11 13a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z" />
+  </svg>
+);
+
+const ListIcon = () => (
+  <svg className="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
+    <path fillRule="evenodd" d="M3 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1zm0 4a1 1 0 011-1h12a1 1 0 110 2H4a1 1 0 01-1-1z" clipRule="evenodd" />
+  </svg>
+);
+
+// Mock data for demo
+const mockCategories = [
+  { _id: '1', name: 'Burgers', logo_url: null },
+  { _id: '2', name: 'Pizza', logo_url: null },
+  { _id: '3', name: 'Drinks', logo_url: null },
+  { _id: '4', name: 'Sides', logo_url: null },
+  { _id: '5', name: 'Desserts', logo_url: null },
+];
+
+const mockProducts = [
+  { _id: '1', name: 'Classic Burger', price: 9.99, tax_percent: 8, stock: 50, category_id: '1', image_url: null, description: 'Juicy beef patty with fresh vegetables' },
+  { _id: '2', name: 'Cheese Burger', price: 11.99, tax_percent: 8, stock: 45, category_id: '1', image_url: null, description: 'Classic burger with melted cheese' },
+  { _id: '3', name: 'Double Burger', price: 14.99, tax_percent: 8, stock: 30, category_id: '1', image_url: null, description: 'Double patty for extra hunger' },
+  { _id: '4', name: 'Veggie Burger', price: 10.99, tax_percent: 8, stock: 25, category_id: '1', image_url: null, description: 'Plant-based patty with fresh veggies' },
+  { _id: '5', name: 'Margherita Pizza', price: 12.99, tax_percent: 8, stock: 40, category_id: '2', image_url: null, description: 'Classic tomato and mozzarella' },
+  { _id: '6', name: 'Pepperoni Pizza', price: 14.99, tax_percent: 8, stock: 35, category_id: '2', image_url: null, description: 'Loaded with pepperoni slices' },
+  { _id: '7', name: 'BBQ Chicken Pizza', price: 15.99, tax_percent: 8, stock: 28, category_id: '2', image_url: null, description: 'BBQ sauce with grilled chicken' },
+  { _id: '8', name: 'Veggie Pizza', price: 13.99, tax_percent: 8, stock: 32, category_id: '2', image_url: null, description: 'Fresh vegetables on crispy crust' },
+  { _id: '9', name: 'Coca Cola', price: 2.99, tax_percent: 5, stock: 100, category_id: '3', image_url: null, description: 'Refreshing cola drink' },
+  { _id: '10', name: 'Sprite', price: 2.99, tax_percent: 5, stock: 90, category_id: '3', image_url: null, description: 'Lemon-lime soda' },
+  { _id: '11', name: 'Orange Juice', price: 3.99, tax_percent: 5, stock: 60, category_id: '3', image_url: null, description: 'Fresh squeezed orange juice' },
+  { _id: '12', name: 'Milkshake', price: 4.99, tax_percent: 5, stock: 45, category_id: '3', image_url: null, description: 'Creamy vanilla milkshake' },
+  { _id: '13', name: 'French Fries', price: 3.99, tax_percent: 8, stock: 80, category_id: '4', image_url: null, description: 'Crispy golden fries' },
+  { _id: '14', name: 'Onion Rings', price: 4.49, tax_percent: 8, stock: 55, category_id: '4', image_url: null, description: 'Crunchy breaded onion rings' },
+  { _id: '15', name: 'Chicken Nuggets', price: 5.99, tax_percent: 8, stock: 65, category_id: '4', image_url: null, description: '6 pieces of crispy nuggets' },
+  { _id: '16', name: 'Ice Cream', price: 3.99, tax_percent: 5, stock: 40, category_id: '5', image_url: null, description: 'Creamy vanilla ice cream' },
+  { _id: '17', name: 'Brownie', price: 4.49, tax_percent: 5, stock: 35, category_id: '5', image_url: null, description: 'Chocolate brownie with nuts' },
+  { _id: '18', name: 'Apple Pie', price: 3.99, tax_percent: 5, stock: 30, category_id: '5', image_url: null, description: 'Warm apple pie with cinnamon' },
+];
+
+export default ProductListing;
