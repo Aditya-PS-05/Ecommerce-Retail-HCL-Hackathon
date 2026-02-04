@@ -1,35 +1,31 @@
-# 🛒 RetailHub - E-Commerce Platform
+# RetailHub - E-Commerce Platform
 
-A modern, full-stack e-commerce platform built with React and FastAPI microservices. RetailHub provides a seamless shopping experience with features like product browsing, cart management, order tracking, and an admin dashboard for store management.
+A full-stack e-commerce platform built with React and FastAPI. It handles product browsing, cart management, order tracking, and includes an admin dashboard for store management.
 
-![RetailHub](https://img.shields.io/badge/RetailHub-E--Commerce-red)
-![React](https://img.shields.io/badge/React-18-blue)
-![FastAPI](https://img.shields.io/badge/FastAPI-Python-green)
-![MongoDB](https://img.shields.io/badge/MongoDB-Database-brightgreen)
+## Features
 
-## 🌟 Features
+### For Customers
+- Browse products with category filters, search, and sorting
+- Shopping cart with persistent storage
+- Place orders with Cash on Delivery
+- View order history
+- User login and registration with JWT authentication
+- Works on desktop and mobile
 
-### Customer Features
-- **Product Browsing** - Browse products with filtering by category, search, and sorting
-- **Shopping Cart** - Add/remove items, update quantities, persistent cart
-- **Order Management** - Place orders with Cash on Delivery, view order history
-- **User Authentication** - Secure login/register with JWT tokens
-- **Responsive Design** - Works seamlessly on desktop and mobile
+### For Admins
+- Dashboard with overview of products, categories, orders, and users
+- Add, edit, and delete products
+- Manage categories
+- Track and update inventory
 
-### Admin Features
-- **Dashboard** - Overview of products, categories, orders, and users
-- **Product Management** - Create, edit, and delete products
-- **Category Management** - Organize products into categories
-- **Inventory Tracking** - Monitor and update stock levels
+## Architecture
 
-## 🏗️ Architecture
-
-RetailHub uses a **microservices architecture** with the following services:
+The platform uses a microservices architecture:
 
 ```
 ┌─────────────────┐     ┌──────────────────────────────────────┐
 │                 │     │           Backend Services           │
-│   React SPA     │────▶│  ┌─────────┐  ┌─────────┐            │
+│   React SPA     │────>│  ┌─────────┐  ┌─────────┐            │
 │   (Frontend)    │     │  │  Auth   │  │Products │            │
 │                 │     │  └─────────┘  └─────────┘            │
 └─────────────────┘     │  ┌──────────┐  ┌─────────┐           │
@@ -40,24 +36,24 @@ RetailHub uses a **microservices architecture** with the following services:
                         │  └─────────┘  └─────────┘            │
                         └──────────────────────────────────────┘
                                         │
-                                        ▼
+                                        v
                                ┌─────────────────┐
                                │    MongoDB      │
                                └─────────────────┘
 ```
 
-## 🚀 Getting Started
+## Getting Started
 
 ### Prerequisites
 
-- Node.js 18+
-- Python 3.11+
+- Node.js 18 or higher
+- Python 3.11 or higher
 - MongoDB
-- pnpm (recommended) or npm
+- pnpm or npm
 
 ### Backend Setup
 
-1. Navigate to the backend directory:
+1. Go to the backend folder:
    ```bash
    cd backend
    ```
@@ -69,21 +65,21 @@ RetailHub uses a **microservices architecture** with the following services:
    pip install -r requirements.txt
    ```
 
-3. Configure environment variables:
+3. Set up environment variables:
    ```bash
    cp .env.example .env
    # Edit .env with your MongoDB URI and JWT secret
    ```
 
-4. Run the backend:
+4. Start the backend:
    ```bash
    python main.py
    ```
-   The API will be available at `http://localhost:8000`
+   The API runs at `http://localhost:8000`
 
 ### Frontend Setup
 
-1. Navigate to the frontend directory:
+1. Go to the frontend folder:
    ```bash
    cd frontend
    ```
@@ -93,7 +89,7 @@ RetailHub uses a **microservices architecture** with the following services:
    pnpm install  # or npm install
    ```
 
-3. Configure environment variables:
+3. Set up environment variables:
    ```bash
    cp .env.example .env
    # Edit .env with your backend API URLs
@@ -103,89 +99,89 @@ RetailHub uses a **microservices architecture** with the following services:
    ```bash
    pnpm start  # or npm start
    ```
-   The app will be available at `http://localhost:3000`
+   The app runs at `http://localhost:3000`
 
-## 📡 API Reference
+## API Reference
 
-All endpoints are prefixed with `/api`. Authentication required endpoints need a `Bearer` token in the `Authorization` header.
+All endpoints use the `/api` prefix. Protected endpoints require a Bearer token in the Authorization header.
 
-### Authentication Service (`/api/auth`)
+### Authentication Service (/api/auth)
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| POST | `/register` | Register a new user | ❌ |
-| POST | `/login` | Login with email/password | ❌ |
-| POST | `/refresh` | Refresh access token | ❌ |
-| POST | `/logout` | Logout user | ✅ |
-| GET | `/me` | Get current user profile | ✅ |
-| GET | `/me/cart` | Get user's shopping cart | ✅ |
-| POST | `/me/cart` | Add item to cart | ✅ |
-| PATCH | `/me/cart/{product_id}` | Update cart item quantity | ✅ |
-| DELETE | `/me/cart/{product_id}` | Remove item from cart | ✅ |
-| DELETE | `/me/cart` | Clear entire cart | ✅ |
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| POST | /register | Register a new user | No |
+| POST | /login | Login with email and password | No |
+| POST | /refresh | Refresh access token | No |
+| POST | /logout | Logout user | Yes |
+| GET | /me | Get current user profile | Yes |
+| GET | /me/cart | Get shopping cart | Yes |
+| POST | /me/cart | Add item to cart | Yes |
+| PATCH | /me/cart/{product_id} | Update cart item quantity | Yes |
+| DELETE | /me/cart/{product_id} | Remove item from cart | Yes |
+| DELETE | /me/cart | Clear cart | Yes |
 
-### Products Service (`/api/products`)
+### Products Service (/api/products)
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/` | List products (paginated) | ❌ |
-| GET | `/{product_id}` | Get product details | ❌ |
-| POST | `/` | Create new product | 🔒 Admin |
-| PATCH | `/{product_id}` | Update product | 🔒 Admin |
-| DELETE | `/{product_id}` | Delete product | 🔒 Admin |
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | / | List products (paginated) | No |
+| GET | /{product_id} | Get product details | No |
+| POST | / | Create product | Admin only |
+| PATCH | /{product_id} | Update product | Admin only |
+| DELETE | /{product_id} | Delete product | Admin only |
 
-**Query Parameters for GET `/`:**
-- `page` - Page number (default: 1)
-- `limit` - Items per page (default: 10, max: 100)
-- `category_id` - Filter by category
+Query parameters for GET /:
+- page - Page number (default: 1)
+- limit - Items per page (default: 10, max: 100)
+- category_id - Filter by category
 
-### Categories Service (`/api/categories`)
+### Categories Service (/api/categories)
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/` | List all categories | ❌ |
-| GET | `/{category_id}` | Get category details | ❌ |
-| POST | `/` | Create new category | 🔒 Admin |
-| PATCH | `/{category_id}` | Update category | 🔒 Admin |
-| DELETE | `/{category_id}` | Delete category | 🔒 Admin |
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | / | List all categories | No |
+| GET | /{category_id} | Get category details | No |
+| POST | / | Create category | Admin only |
+| PATCH | /{category_id} | Update category | Admin only |
+| DELETE | /{category_id} | Delete category | Admin only |
 
-### Orders Service (`/api/orders`)
+### Orders Service (/api/orders)
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/` | List orders (users: own, admins: all) | ✅ |
-| GET | `/{order_id}` | Get order details | ✅ |
-| POST | `/` | Create new order | ✅ |
-| POST | `/{order_id}/reorder` | Reorder from previous order | ✅ |
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | / | List orders (own for users, all for admins) | Yes |
+| GET | /{order_id} | Get order details | Yes |
+| POST | / | Create order | Yes |
+| POST | /{order_id}/reorder | Reorder from previous order | Yes |
 
-**Query Parameters for GET `/`:**
-- `page` - Page number (default: 1)
-- `limit` - Items per page (default: 10, max: 100)
+Query parameters for GET /:
+- page - Page number (default: 1)
+- limit - Items per page (default: 10, max: 100)
 
-### Inventory Service (`/api/inventory`)
+### Inventory Service (/api/inventory)
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/` | Get all product stock levels | 🔒 Admin |
-| PATCH | `/{product_id}` | Update product stock | 🔒 Admin |
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | / | Get all stock levels | Admin only |
+| PATCH | /{product_id} | Update stock | Admin only |
 
-### Search Service (`/api/search`)
+### Search Service (/api/search)
 
-| Method | Endpoint | Description | Auth |
-|--------|----------|-------------|------|
-| GET | `/` | Search products | ❌ |
+| Method | Endpoint | Description | Auth Required |
+|--------|----------|-------------|---------------|
+| GET | / | Search products | No |
 
-**Query Parameters:**
-- `q` - Search query (searches title, description)
+Query parameters:
+- q - Search query (searches title and description)
 
-## 🔐 Authentication
+## Authentication
 
-RetailHub uses JWT (JSON Web Tokens) for authentication:
+The platform uses JWT tokens:
 
-1. **Access Token** - Short-lived token (15 minutes) for API requests
-2. **Refresh Token** - Long-lived token (7 days) to obtain new access tokens
+- Access Token: Valid for 15 minutes, used for API requests
+- Refresh Token: Valid for 7 days, used to get new access tokens
 
-### Login Response Example
+Login response example:
 ```json
 {
   "access_token": "eyJhbGciOiJIUzI1NiIs...",
@@ -200,30 +196,30 @@ RetailHub uses JWT (JSON Web Tokens) for authentication:
 }
 ```
 
-## 🛠️ Tech Stack
+## Tech Stack
 
 ### Frontend
-- **React 18** - UI library
-- **React Router** - Client-side routing
-- **Tailwind CSS** - Styling
-- **Axios** - HTTP client
-- **Context API** - State management
+- React 18
+- React Router
+- Tailwind CSS
+- Axios
+- Context API
 
 ### Backend
-- **FastAPI** - Python web framework
-- **PyMongo** - MongoDB driver
-- **Pydantic** - Data validation
-- **Python-Jose** - JWT handling
-- **Uvicorn** - ASGI server
+- FastAPI
+- PyMongo
+- Pydantic
+- Python-Jose
+- Uvicorn
 
 ### Database
-- **MongoDB** - NoSQL database
+- MongoDB
 
 ### Deployment
-- **Vercel** - Frontend hosting
-- **Railway** - Backend microservices hosting
+- Vercel for frontend
+- Railway for backend services
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 Ecommerse/
@@ -257,22 +253,10 @@ Ecommerse/
 └── README.md
 ```
 
-## 🤝 Contributing
+## Author
 
-1. Fork the repository
-2. Create your feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit your changes (`git commit -m 'Add some amazing feature'`)
-4. Push to the branch (`git push origin feature/amazing-feature`)
-5. Open a Pull Request
-
-## 📝 License
-
-This project is licensed under the MIT License.
-
-## 👥 Authors
-
-- **Aditya** - *Initial work*
+Aditya
 
 ---
 
-Built with ❤️ for HCL Hackathon 2026
+Built for HCL Hackathon 2026
