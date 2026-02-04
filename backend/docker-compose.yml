@@ -1,0 +1,115 @@
+version: '3.8'
+
+services:
+  mongodb:
+    image: mongo:7
+    container_name: retail_mongodb
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    networks:
+      - retail_network
+
+  auth-service:
+    build:
+      context: .
+      dockerfile: services/auth/Dockerfile
+    container_name: auth_service
+    ports:
+      - "8001:8001"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - DATABASE_NAME=retail_portal
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - mongodb
+    networks:
+      - retail_network
+
+  products-service:
+    build:
+      context: .
+      dockerfile: services/products/Dockerfile
+    container_name: products_service
+    ports:
+      - "8002:8002"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - DATABASE_NAME=retail_portal
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - mongodb
+    networks:
+      - retail_network
+
+  categories-service:
+    build:
+      context: .
+      dockerfile: services/categories/Dockerfile
+    container_name: categories_service
+    ports:
+      - "8003:8003"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - DATABASE_NAME=retail_portal
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - mongodb
+    networks:
+      - retail_network
+
+  orders-service:
+    build:
+      context: .
+      dockerfile: services/orders/Dockerfile
+    container_name: orders_service
+    ports:
+      - "8004:8004"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - DATABASE_NAME=retail_portal
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - mongodb
+    networks:
+      - retail_network
+
+  inventory-service:
+    build:
+      context: .
+      dockerfile: services/inventory/Dockerfile
+    container_name: inventory_service
+    ports:
+      - "8005:8005"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - DATABASE_NAME=retail_portal
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - mongodb
+    networks:
+      - retail_network
+
+  search-service:
+    build:
+      context: .
+      dockerfile: services/search/Dockerfile
+    container_name: search_service
+    ports:
+      - "8006:8006"
+    environment:
+      - MONGO_URI=mongodb://mongodb:27017
+      - DATABASE_NAME=retail_portal
+      - JWT_SECRET=${JWT_SECRET}
+    depends_on:
+      - mongodb
+    networks:
+      - retail_network
+
+volumes:
+  mongodb_data:
+
+networks:
+  retail_network:
+    driver: bridge
