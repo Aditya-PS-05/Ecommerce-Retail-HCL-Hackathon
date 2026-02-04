@@ -1,7 +1,7 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 import { AuthProvider, useAuth, CartProvider, useCart } from './context';
 import { Navbar, Footer, ProtectedRoute, Loader } from './components';
-import { Home, Landing, ProductListing, Login, Register, ForgotPassword } from './pages';
+import { Home, Landing, ProductListing, Login, Register, ForgotPassword, Cart } from './pages';
 import './App.css';
 
 // Cart Notification Component
@@ -57,6 +57,14 @@ function AppContent() {
         <Route path="/login" element={<MainLayout user={user} logout={logout}><Login /></MainLayout>} />
         <Route path="/register" element={<MainLayout user={user} logout={logout}><Register /></MainLayout>} />
         <Route path="/forgot-password" element={<MainLayout user={user} logout={logout}><ForgotPassword /></MainLayout>} />
+        <Route
+          path="/cart"
+          element={
+            <MainLayout user={user} logout={logout}>
+              <Cart />
+            </MainLayout>
+          }
+        />
         <Route
           path="/orders"
           element={
