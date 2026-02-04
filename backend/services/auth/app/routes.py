@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException, status, Depends
 from datetime import datetime
 from bson import ObjectId
 from app.models import (
-    UserCreate, UserResponse, UserLogin, UserRole, Token, TokenRefresh, AccessToken,
+    UserCreate, UserResponse, UserLogin, UserRole, Token, TokenRefresh, AccessToken, TokenUser,
     CartItem, CartItemAdd, CartItemUpdate, CartResponse
 )
 from common.security import hash_password, verify_password, create_access_token, create_refresh_token, decode_token
@@ -84,7 +84,13 @@ async def login(user_data: UserLogin):
     
     return Token(
         access_token=access_token,
-        refresh_token=refresh_token
+        refresh_token=refresh_token,
+        user=TokenUser(
+            id=str(user["_id"]),
+            email=user["email"],
+            name=user.get("name", ""),
+            role=UserRole(user["role"])
+        )
     )
 
 

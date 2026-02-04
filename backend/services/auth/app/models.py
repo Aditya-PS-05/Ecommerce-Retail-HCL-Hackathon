@@ -57,10 +57,18 @@ class UserResponse(BaseModel):
         from_attributes = True
 
 
+class TokenUser(BaseModel):
+    id: str
+    email: EmailStr
+    name: str
+    role: UserRole
+
+
 class Token(BaseModel):
     access_token: str
     refresh_token: str
     token_type: str = "bearer"
+    user: TokenUser
 
 
 class TokenRefresh(BaseModel):

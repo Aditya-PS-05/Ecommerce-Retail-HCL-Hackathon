@@ -15,32 +15,32 @@ const AdminProducts = () => {
   const ITEMS_PER_PAGE = 10;
 
   useEffect(() => {
+    const fetchProducts = async () => {
+      setLoading(true);
+      try {
+        const res = await api.get('/products', { params: { page, limit: ITEMS_PER_PAGE } });
+        setProducts(res.data.products || res.data);
+        setTotalPages(res.data.total_pages || Math.ceil((res.data.total || 20) / ITEMS_PER_PAGE));
+      } catch (err) {
+        setProducts(mockProducts);
+        setTotalPages(2);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get('/categories');
+        setCategories(res.data);
+      } catch (err) {
+        setCategories(mockCategories);
+      }
+    };
+
     fetchProducts();
     fetchCategories();
   }, [page]);
-
-  const fetchCategories = async () => {
-    try {
-      const res = await api.get('/categories');
-      setCategories(res.data);
-    } catch (err) {
-      setCategories(mockCategories);
-    }
-  };
-
-  const fetchProducts = async () => {
-    setLoading(true);
-    try {
-      const res = await api.get('/products', { params: { page, limit: ITEMS_PER_PAGE } });
-      setProducts(res.data.products || res.data);
-      setTotalPages(res.data.total_pages || Math.ceil((res.data.total || 20) / ITEMS_PER_PAGE));
-    } catch (err) {
-      setProducts(mockProducts);
-      setTotalPages(2);
-    } finally {
-      setLoading(false);
-    }
-  };
 
   const handleDelete = async () => {
     if (!deleteModal.product) return;
