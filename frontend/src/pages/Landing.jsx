@@ -21,11 +21,11 @@ const Landing = () => {
           </p>
 
           <div className="flex flex-col sm:flex-row items-center gap-4">
-            <Link to="/products" className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all flex items-center gap-2">
+            <Link to="/products" className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all transform hover:scale-105 hover:shadow-lg flex items-center gap-2">
               Browse Products
               <Icon icon="solar:arrow-right-linear" width="18" />
             </Link>
-            <Link to="/register" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all flex items-center gap-2">
+            <Link to="/register" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all transform hover:scale-105 flex items-center gap-2">
               <Icon icon="solar:user-plus-linear" width="18" />
               Create Account
             </Link>
@@ -52,8 +52,8 @@ const Landing = () => {
                 { name: 'Power Bank', price: '$49.99', icon: '🔋', color: 'from-green-100 to-green-50' },
                 { name: 'USB-C Hub', price: '$39.99', icon: '🔌', color: 'from-gray-100 to-gray-50' },
               ].map((item) => (
-                <div key={item.name} className={`bg-gradient-to-br ${item.color} rounded-lg p-4 text-center hover:shadow-md transition-all cursor-pointer`}>
-                  <div className="text-4xl mb-2">{item.icon}</div>
+                <div key={item.name} className={`bg-gradient-to-br ${item.color} rounded-lg p-4 text-center hover:shadow-lg transition-all transform hover:-translate-y-1 cursor-pointer`}>
+                  <div className="text-4xl mb-2 transition-transform hover:scale-110">{item.icon}</div>
                   <div className="font-semibold text-gray-800">{item.name}</div>
                   <div className="text-primary font-bold">{item.price}</div>
                 </div>
@@ -78,8 +78,8 @@ const Landing = () => {
               { icon: 'solar:tag-price-linear', title: 'Best Prices', desc: 'Competitive prices & offers' },
               { icon: 'solar:headphones-round-linear', title: '24/7 Support', desc: 'Always here to help you' },
             ].map((feature) => (
-              <div key={feature.title} className="bg-white rounded-xl p-6 shadow-sm hover:shadow-md transition-all text-center">
-                <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4">
+              <div key={feature.title} className="bg-white rounded-xl p-6 shadow-sm hover:shadow-xl transition-all transform hover:-translate-y-2 text-center border border-transparent hover:border-primary/20">
+                <div className="w-14 h-14 mx-auto rounded-full bg-primary/10 flex items-center justify-center mb-4 transition-transform hover:scale-110 hover:rotate-6">
                   <Icon icon={feature.icon} width="28" className="text-primary" />
                 </div>
                 <h3 className="font-bold text-gray-800 mb-2">{feature.title}</h3>
@@ -107,8 +107,8 @@ const Landing = () => {
               { name: 'Wearables', icon: '⌚', count: 15, color: 'bg-pink-50 hover:bg-pink-100' },
               { name: 'Gaming', icon: '🎮', count: 28, color: 'bg-red-50 hover:bg-red-100' },
             ].map((cat) => (
-              <Link to="/products" key={cat.name} className={`${cat.color} rounded-xl p-6 text-center transition-all cursor-pointer`}>
-                <div className="text-4xl mb-2">{cat.icon}</div>
+              <Link to="/products" key={cat.name} className={`${cat.color} rounded-xl p-6 text-center transition-all transform hover:-translate-y-1 hover:shadow-md cursor-pointer`}>
+                <div className="text-4xl mb-2 transition-transform hover:scale-125">{cat.icon}</div>
                 <div className="font-bold text-gray-800">{cat.name}</div>
                 <div className="text-sm text-gray-500">{cat.count} items</div>
               </Link>
@@ -152,10 +152,10 @@ const Landing = () => {
             Join thousands of happy customers and discover the best products today.
           </p>
           <div className="flex flex-col sm:flex-row justify-center gap-4">
-            <Link to="/products" className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all">
+            <Link to="/products" className="bg-white text-primary px-8 py-3 rounded-lg font-semibold hover:bg-gray-100 transition-all transform hover:scale-105 hover:shadow-xl">
               Shop Now
             </Link>
-            <Link to="/register" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all flex items-center justify-center gap-2">
+            <Link to="/register" className="border-2 border-white text-white px-8 py-3 rounded-lg font-semibold hover:bg-white/10 transition-all transform hover:scale-105 flex items-center justify-center gap-2">
               <Icon icon="solar:user-plus-linear" width="18" />
               Sign Up Free
             </Link>

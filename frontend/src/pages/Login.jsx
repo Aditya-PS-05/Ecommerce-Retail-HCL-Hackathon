@@ -55,18 +55,25 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-[80vh] flex items-center justify-center px-4">
+    <div className="min-h-[80vh] flex items-center justify-center px-4 bg-gradient-to-br from-gray-50 to-gray-100">
       <div className="w-full max-w-md">
-        <div className="bg-white rounded-lg shadow-lg p-8">
+        <div className="bg-white rounded-xl shadow-2xl p-8 border border-gray-100">
           {/* Header */}
-          <h1 className="text-2xl font-bold text-center text-gray-800 mb-6">
-            Welcome Back
-          </h1>
+          <div className="text-center mb-6">
+            <div className="inline-block p-3 bg-primary/10 rounded-full mb-3">
+              <span className="text-3xl">👤</span>
+            </div>
+            <h1 className="text-2xl font-bold text-gray-800">
+              Welcome Back
+            </h1>
+            <p className="text-gray-600 text-sm mt-2">Sign in to continue shopping</p>
+          </div>
 
           {/* API Error */}
           {apiError && (
-            <div className="mb-4 p-3 bg-red-100 text-red-700 rounded-lg text-sm">
-              {apiError}
+            <div className="mb-4 p-3 bg-red-50 border border-red-200 text-red-700 rounded-lg text-sm flex items-center gap-2 animate-slide-in">
+              <span>⚠️</span>
+              <span>{apiError}</span>
             </div>
           )}
 
@@ -83,8 +90,8 @@ const Login = () => {
                 value={formData.email}
                 onChange={handleChange}
                 placeholder="Enter your email"
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-                  errors.email ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all ${
+                  errors.email ? 'border-red-500 shake' : 'border-gray-300 hover:border-gray-400'
                 }`}
               />
               {errors.email && (
@@ -103,8 +110,8 @@ const Login = () => {
                 value={formData.password}
                 onChange={handleChange}
                 placeholder="Enter your password"
-                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary ${
-                  errors.password ? 'border-red-500' : 'border-gray-300'
+                className={`w-full px-4 py-3 border rounded-lg focus:outline-none focus:ring-2 focus:ring-primary transition-all ${
+                  errors.password ? 'border-red-500 shake' : 'border-gray-300 hover:border-gray-400'
                 }`}
               />
               {errors.password && (
@@ -126,7 +133,7 @@ const Login = () => {
             <button
               type="submit"
               disabled={loading}
-              className="w-full py-3 bg-primary text-white rounded-lg font-semibold hover:bg-red-600 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full py-3 bg-primary text-white rounded-lg font-semibold hover:bg-red-600 transition-all transform hover:scale-[1.02] hover:shadow-lg disabled:opacity-50 disabled:cursor-not-allowed disabled:transform-none"
             >
               {loading ? (
                 <span className="flex items-center justify-center">
