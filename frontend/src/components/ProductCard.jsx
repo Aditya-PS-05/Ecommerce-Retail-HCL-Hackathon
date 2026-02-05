@@ -11,12 +11,12 @@ const ProductCard = ({ product, onAddToCart }) => {
   const isInCart = cart.items.some(item => item.product_id === productId);
 
   return (
-    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-lg transition-shadow">
+    <div className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-all duration-300 transform hover:-translate-y-1">
       {/* Image */}
       <Link to={`/products/${productId}`}>
-        <div className="h-48 bg-gray-100 flex items-center justify-center overflow-hidden">
+        <div className="h-48 bg-gradient-to-br from-gray-50 to-gray-100 flex items-center justify-center overflow-hidden">
           {image_url ? (
-            <img src={image_url} alt={displayName} className="w-full h-full object-cover" />
+            <img src={image_url} alt={displayName} className="w-full h-full object-cover hover:scale-105 transition-transform duration-300" />
           ) : (
             <span className="text-6xl">📦</span>
           )}
@@ -47,12 +47,12 @@ const ProductCard = ({ product, onAddToCart }) => {
         <button
           onClick={() => onAddToCart(product)}
           disabled={stock === 0 || isInCart}
-          className={`w-full mt-4 py-2 rounded-lg font-semibold transition-colors ${
+          className={`w-full mt-4 py-2 rounded-lg font-semibold transition-all duration-200 ${
             stock === 0
               ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
               : isInCart
-              ? 'bg-green-500 text-white cursor-default'
-              : 'bg-primary text-white hover:bg-red-600'
+              ? 'bg-green-500 text-white cursor-default shadow-md'
+              : 'bg-primary text-white hover:bg-red-600 shadow-md hover:shadow-lg transform hover:-translate-y-0.5'
           }`}
         >
           {stock === 0 ? 'Out of Stock' : isInCart ? '✓ Added to Cart' : 'Add to Cart'}

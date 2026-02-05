@@ -12,12 +12,15 @@ function CartNotification() {
   if (!notification) return null;
   
   return (
-    <div className={`fixed top-20 right-4 z-50 px-4 py-3 rounded-lg shadow-lg transition-all transform ${
+    <div className={`fixed top-20 right-4 z-50 px-4 py-3 rounded-lg shadow-xl transition-all transform animate-slide-in ${
       notification.type === 'success' 
-        ? 'bg-green-500 text-white' 
-        : 'bg-red-500 text-white'
+        ? 'bg-gradient-to-r from-green-500 to-green-600 text-white' 
+        : 'bg-gradient-to-r from-red-500 to-red-600 text-white'
     }`}>
-      {notification.message}
+      <div className="flex items-center space-x-2">
+        <span className="text-lg">{notification.type === 'success' ? '✓' : '⚠'}</span>
+        <span>{notification.message}</span>
+      </div>
     </div>
   );
 }

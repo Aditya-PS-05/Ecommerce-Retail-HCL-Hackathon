@@ -10,21 +10,21 @@ const Navbar = ({ user, cartCount = 0, onLogout }) => {
       <div className="max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-16">
           {/* Logo */}
-          <Link to="/" className="flex items-center space-x-2">
-            <span className="text-2xl font-bold text-primary">🛒 RetailHub</span>
+          <Link to="/" className="flex items-center space-x-2 transition-transform hover:scale-105">
+            <span className="text-2xl font-bold text-primary bg-gradient-to-r from-red-500 to-red-600 bg-clip-text text-transparent">🛒 RetailHub</span>
           </Link>
 
           {/* Desktop Menu */}
           <div className="hidden md:flex items-center space-x-6">
-            <Link to="/products" className="text-gray-700 hover:text-primary">
+            <Link to="/products" className="text-gray-700 hover:text-primary transition-colors duration-200 font-medium">
               Products
             </Link>
             
             {/* Cart */}
-            <Link to="/cart" className="relative text-gray-700 hover:text-primary">
+            <Link to="/cart" className="relative text-gray-700 hover:text-primary transition-all duration-200 hover:scale-110">
               <span className="text-xl">🛒</span>
               {cartCount > 0 && (
-                <span className="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center">
+                <span className="absolute -top-2 -right-2 bg-primary text-white text-xs w-5 h-5 rounded-full flex items-center justify-center animate-pulse">
                   {cartCount}
                 </span>
               )}
@@ -60,7 +60,7 @@ const Navbar = ({ user, cartCount = 0, onLogout }) => {
                 )}
               </div>
             ) : (
-              <Link to="/login" className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-600">
+              <Link to="/login" className="bg-primary text-white px-4 py-2 rounded-lg hover:bg-red-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
                 Login
               </Link>
             )}
