@@ -15,14 +15,16 @@ const Cart = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <span className="text-6xl mb-4 block">🛒</span>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center p-4">
+        <div className="text-center bg-white rounded-xl shadow-2xl p-8 max-w-md transform animate-slide-up">
+          <div className="inline-block p-4 bg-blue-50 rounded-full mb-4">
+            <span className="text-6xl">🛒</span>
+          </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Please Login</h2>
           <p className="text-gray-600 mb-6">You need to login to view your cart</p>
           <Link
             to="/login"
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-red-600"
+            className="inline-block px-8 py-3 bg-primary text-white rounded-lg hover:bg-red-600 transition-all transform hover:scale-105 hover:shadow-lg font-semibold"
           >
             Login
           </Link>
@@ -41,9 +43,11 @@ const Cart = () => {
 
   if (orderSuccess) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="bg-white p-8 rounded-lg shadow-lg text-center max-w-md">
-          <span className="text-6xl mb-4 block">✅</span>
+      <div className="min-h-screen bg-gradient-to-br from-green-50 to-white flex items-center justify-center p-4">
+        <div className="bg-white p-8 rounded-xl shadow-2xl text-center max-w-md transform animate-slide-up">
+          <div className="inline-block p-4 bg-green-50 rounded-full mb-4">
+            <span className="text-6xl animate-bounce">✅</span>
+          </div>
           <h2 className="text-2xl font-bold text-green-600 mb-4">Order Confirmed!</h2>
           <p className="text-gray-600 mb-2">Your order has been placed successfully.</p>
           <p className="text-gray-600 mb-2">Payment Method: <strong>Cash on Delivery</strong></p>
@@ -52,13 +56,13 @@ const Cart = () => {
           <div className="flex gap-4 justify-center">
             <Link
               to="/orders"
-              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-red-600"
+              className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-red-600 transition-all transform hover:scale-105 hover:shadow-lg font-semibold"
             >
               View Orders
             </Link>
             <Link
               to="/home"
-              className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300"
+              className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 transition-all transform hover:scale-105 font-semibold"
             >
               Continue Shopping
             </Link>
@@ -70,14 +74,16 @@ const Cart = () => {
 
   if (cart.items.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <span className="text-6xl mb-4 block">🛒</span>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center p-4">
+        <div className="text-center bg-white rounded-xl shadow-2xl p-8 max-w-md transform animate-slide-up">
+          <div className="inline-block p-4 bg-gray-50 rounded-full mb-4">
+            <span className="text-6xl">🛒</span>
+          </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Your Cart is Empty</h2>
           <p className="text-gray-600 mb-6">Add some products to your cart to get started</p>
           <Link
             to="/home"
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-red-600"
+            className="inline-block px-8 py-3 bg-primary text-white rounded-lg hover:bg-red-600 transition-all transform hover:scale-105 hover:shadow-lg font-semibold"
           >
             Browse Products
           </Link>
@@ -128,15 +134,15 @@ const Cart = () => {
       <div className="max-w-4xl mx-auto px-4">
         <h1 className="text-3xl font-bold text-gray-800 mb-8">Shopping Cart</h1>
 
-        <div className="bg-white rounded-lg shadow-md overflow-hidden">
+        <div className="bg-white rounded-xl shadow-md overflow-hidden">
           {/* Cart Items */}
           <div className="divide-y">
             {cart.items.map((item) => (
-              <div key={item.product_id} className="p-4 flex items-center gap-4">
+              <div key={item.product_id} className="p-4 flex items-center gap-4 hover:bg-gray-50 transition-colors">
                 {/* Product Image */}
-                <div className="w-20 h-20 bg-gray-100 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0">
+                <div className="w-20 h-20 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center justify-center overflow-hidden flex-shrink-0 border border-gray-200">
                   {item.image_url ? (
-                    <img src={item.image_url} alt={item.name} className="w-full h-full object-cover" />
+                    <img src={item.image_url} alt={item.name} className="w-full h-full object-cover hover:scale-105 transition-transform" />
                   ) : (
                     <span className="text-3xl">📦</span>
                   )}
@@ -157,7 +163,7 @@ const Cart = () => {
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => handleQuantityChange(item.product_id, item.quantity - 1)}
-                    className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300"
+                    className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-all hover:scale-110 disabled:opacity-50 disabled:cursor-not-allowed"
                     disabled={item.quantity <= 1}
                   >
                     -
@@ -165,7 +171,7 @@ const Cart = () => {
                   <span className="w-8 text-center font-semibold">{item.quantity}</span>
                   <button
                     onClick={() => handleQuantityChange(item.product_id, item.quantity + 1)}
-                    className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300"
+                    className="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gray-300 transition-all hover:scale-110"
                   >
                     +
                   </button>
@@ -181,7 +187,8 @@ const Cart = () => {
                 {/* Remove Button */}
                 <button
                   onClick={() => handleRemoveItem(item.product_id)}
-                  className="text-red-500 hover:text-red-700 p-2"
+                  className="text-red-500 hover:text-red-700 p-2 transition-all hover:scale-125"
+                  title="Remove item"
                 >
                   🗑️
                 </button>
@@ -211,19 +218,19 @@ const Cart = () => {
           <div className="mt-6 flex gap-4">
             <button
               onClick={() => setShowCheckout(true)}
-              className="flex-1 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-red-600"
+              className="flex-1 py-3 bg-primary text-white rounded-lg font-semibold hover:bg-red-600 transition-all transform hover:scale-[1.02] hover:shadow-lg"
             >
               Proceed to Checkout
             </button>
             <Link
               to="/home"
-              className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 text-center"
+              className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 text-center transition-all transform hover:scale-[1.02]"
             >
               Continue Shopping
             </Link>
           </div>
         ) : (
-          <div className="mt-6 bg-white rounded-lg shadow-md p-6">
+          <div className="mt-6 bg-white rounded-xl shadow-md p-6 border border-gray-100">
             <h2 className="text-xl font-bold text-gray-800 mb-4">Checkout</h2>
             
             {/* Shipping Address */}
@@ -268,13 +275,13 @@ const Cart = () => {
               <button
                 onClick={handleCheckout}
                 disabled={checkoutLoading}
-                className="flex-1 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-400"
+                className="flex-1 py-3 bg-green-600 text-white rounded-lg font-semibold hover:bg-green-700 disabled:bg-gray-400 transition-all transform hover:scale-[1.02] hover:shadow-lg disabled:transform-none"
               >
                 {checkoutLoading ? 'Placing Order...' : 'Confirm Order (Cash on Delivery)'}
               </button>
               <button
                 onClick={() => setShowCheckout(false)}
-                className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300"
+                className="px-6 py-3 bg-gray-200 text-gray-800 rounded-lg font-semibold hover:bg-gray-300 transition-all transform hover:scale-[1.02]"
               >
                 Back
               </button>

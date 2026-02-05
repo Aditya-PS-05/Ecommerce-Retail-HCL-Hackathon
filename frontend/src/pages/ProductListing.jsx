@@ -147,8 +147,11 @@ const ProductListing = () => {
         <div className="flex flex-col lg:flex-row gap-6">
           {/* Sidebar Filters - Desktop */}
           <aside className="hidden lg:block w-64 flex-shrink-0">
-            <div className="bg-white rounded-lg shadow-sm p-4 sticky top-24">
-              <h2 className="text-lg font-semibold text-gray-800 mb-4">Filters</h2>
+            <div className="bg-white rounded-xl shadow-sm p-4 sticky top-24 border border-gray-100">
+              <h2 className="text-lg font-semibold text-gray-800 mb-4 flex items-center gap-2">
+                <span>🔍</span>
+                Filters
+              </h2>
               
               {/* Search */}
               <div className="mb-6">
@@ -171,9 +174,9 @@ const ProductListing = () => {
                 <div className="space-y-2">
                   <button
                     onClick={() => handleCategoryChange('')}
-                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors ${
+                    className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all ${
                       !selectedCategory
-                        ? 'bg-primary text-white'
+                        ? 'bg-primary text-white shadow-md'
                         : 'hover:bg-gray-100 text-gray-700'
                     }`}
                   >
@@ -185,10 +188,10 @@ const ProductListing = () => {
                       <button
                         key={catId}
                         onClick={() => handleCategoryChange(catId)}
-                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-colors flex items-center gap-2 ${
+                        className={`w-full text-left px-3 py-2 rounded-lg text-sm transition-all flex items-center gap-2 ${
                           selectedCategory === catId
-                            ? 'bg-primary text-white'
-                            : 'hover:bg-gray-100 text-gray-700'
+                            ? 'bg-primary text-white shadow-md'
+                            : 'hover:bg-gray-100 text-gray-700 hover:translate-x-1'
                         }`}
                       >
                         {category.logo_url ? (
@@ -224,7 +227,7 @@ const ProductListing = () => {
               {hasActiveFilters && (
                 <button
                   onClick={clearFilters}
-                  className="w-full px-4 py-2 text-sm text-primary border border-primary rounded-lg hover:bg-primary hover:text-white transition-colors"
+                  className="w-full px-4 py-2 text-sm text-primary border border-primary rounded-lg hover:bg-primary hover:text-white transition-all transform hover:scale-[1.02]"
                 >
                   Clear All Filters
                 </button>
