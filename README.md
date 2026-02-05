@@ -253,9 +253,11 @@ Ecommerse/
 └── README.md
 ```
 
-## Author
+## Authors
 
-Aditya
+- Aditya Pratap Singh
+- Sunil Saini
+- Akash Kumar
 
 ---
 

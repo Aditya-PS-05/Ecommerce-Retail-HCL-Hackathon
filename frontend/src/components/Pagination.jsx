@@ -22,10 +22,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={() => onPageChange(currentPage - 1)}
         disabled={currentPage === 1}
-        className={`px-3 py-2 rounded-lg ${
+        className={`px-3 py-2 rounded-lg transition-all transform hover:scale-105 ${
           currentPage === 1
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
         }`}
       >
         ← Prev
@@ -39,10 +39,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
           <button
             key={index}
             onClick={() => onPageChange(page)}
-            className={`w-10 h-10 rounded-lg font-medium ${
+            className={`w-10 h-10 rounded-lg font-medium transition-all transform hover:scale-110 ${
               currentPage === page
-                ? 'bg-primary text-white'
-                : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                ? 'bg-primary text-white shadow-lg'
+                : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
             }`}
           >
             {page}
@@ -54,10 +54,10 @@ const Pagination = ({ currentPage, totalPages, onPageChange }) => {
       <button
         onClick={() => onPageChange(currentPage + 1)}
         disabled={currentPage === totalPages}
-        className={`px-3 py-2 rounded-lg ${
+        className={`px-3 py-2 rounded-lg transition-all transform hover:scale-105 ${
           currentPage === totalPages
             ? 'bg-gray-200 text-gray-400 cursor-not-allowed'
-            : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+            : 'bg-gray-200 text-gray-700 hover:bg-gray-300 hover:shadow-md'
         }`}
       >
         Next →

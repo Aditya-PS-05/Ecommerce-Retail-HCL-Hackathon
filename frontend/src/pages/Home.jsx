@@ -88,31 +88,38 @@ const Home = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Hero Section */}
-      <section className="bg-gradient-to-r from-primary to-red-600 text-white py-12 px-4">
-        <div className="max-w-7xl mx-auto text-center">
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">
+      <section className="bg-gradient-to-r from-primary to-red-600 text-white py-16 px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-black/10"></div>
+        <div className="max-w-7xl mx-auto text-center relative z-10">
+          <div className="inline-block mb-4 animate-bounce">
+            <span className="text-6xl">🛍️</span>
+          </div>
+          <h1 className="text-4xl md:text-5xl font-bold mb-4 animate-slide-in">
             Welcome to RetailHub
           </h1>
-          <p className="text-lg md:text-xl opacity-90">
+          <p className="text-lg md:text-xl opacity-90 max-w-2xl mx-auto">
             Discover amazing products at great prices
           </p>
         </div>
       </section>
 
       {/* Categories Section */}
-      <section className="py-8 px-4 bg-white shadow-sm sticky top-16 z-40">
+      <section className="py-8 px-4 bg-white shadow-md sticky top-16 z-40 border-b border-gray-200">
         <div className="max-w-7xl mx-auto">
-          <h2 className="text-xl font-bold text-gray-800 mb-4">Categories</h2>
+          <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+            <span>🏷️</span>
+            Categories
+          </h2>
           
           {/* Category Tabs - Scrollable on mobile */}
           <div className="flex gap-3 overflow-x-auto pb-2 scrollbar-hide">
             {/* All Categories Button */}
             <button
               onClick={() => setSelectedCategory(null)}
-              className={`flex-shrink-0 px-6 py-3 rounded-full font-medium transition-all ${
+              className={`flex-shrink-0 px-6 py-3 rounded-full font-medium transition-all transform hover:scale-105 ${
                 selectedCategory === null
-                  ? 'bg-primary text-white shadow-md'
-                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  ? 'bg-primary text-white shadow-lg'
+                  : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
               }`}
             >
               All
@@ -125,10 +132,10 @@ const Home = () => {
                 <button
                   key={catId}
                   onClick={() => handleCategoryClick(catId)}
-                  className={`flex-shrink-0 flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all ${
+                  className={`flex-shrink-0 flex items-center gap-2 px-6 py-3 rounded-full font-medium transition-all transform hover:scale-105 ${
                     selectedCategory === catId
-                      ? 'bg-primary text-white shadow-md'
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                      ? 'bg-primary text-white shadow-lg'
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200 hover:shadow-md'
                   }`}
                 >
                   {category.logo_url ? (
@@ -177,8 +184,10 @@ const Home = () => {
               </button>
             </div>
           ) : products.length === 0 ? (
-            <div className="text-center py-12">
-              <span className="text-6xl mb-4 block">📦</span>
+            <div className="text-center py-12 bg-white rounded-xl shadow-sm">
+              <div className="inline-block p-4 bg-gray-50 rounded-full mb-4">
+                <span className="text-6xl">📦</span>
+              </div>
               <p className="text-gray-500 text-lg">No products found</p>
             </div>
           ) : (
@@ -267,9 +276,9 @@ const CategorySection = ({ category, onAddToCart, onViewAll }) => {
         </div>
         <button
           onClick={onViewAll}
-          className="text-primary font-medium hover:underline"
+          className="text-primary font-semibold hover:underline transition-all flex items-center gap-1 hover:gap-2"
         >
-          View All →
+          View All <span>→</span>
         </button>
       </div>
 

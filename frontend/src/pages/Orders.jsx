@@ -77,14 +77,16 @@ const Orders = () => {
 
   if (!isAuthenticated) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <span className="text-6xl mb-4 block">📦</span>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center p-4">
+        <div className="text-center bg-white rounded-xl shadow-2xl p-8 max-w-md transform animate-slide-up">
+          <div className="inline-block p-4 bg-blue-50 rounded-full mb-4">
+            <span className="text-6xl">📦</span>
+          </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Please Login</h2>
           <p className="text-gray-600 mb-6">You need to login to view your orders</p>
           <Link
             to="/login"
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-red-600"
+            className="inline-block px-8 py-3 bg-primary text-white rounded-lg hover:bg-red-600 transition-all transform hover:scale-105 hover:shadow-lg font-semibold"
           >
             Login
           </Link>
@@ -103,14 +105,16 @@ const Orders = () => {
 
   if (error) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <span className="text-6xl mb-4 block">❌</span>
+      <div className="min-h-screen bg-gradient-to-br from-red-50 to-white flex items-center justify-center p-4">
+        <div className="text-center bg-white rounded-xl shadow-2xl p-8 max-w-md transform animate-slide-up">
+          <div className="inline-block p-4 bg-red-50 rounded-full mb-4">
+            <span className="text-6xl">❌</span>
+          </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">Error</h2>
           <p className="text-gray-600 mb-6">{error}</p>
           <button
             onClick={refetchOrders}
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-red-600"
+            className="px-8 py-3 bg-primary text-white rounded-lg hover:bg-red-600 transition-all transform hover:scale-105 hover:shadow-lg font-semibold"
           >
             Retry
           </button>
@@ -121,14 +125,16 @@ const Orders = () => {
 
   if (orders.length === 0) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <div className="text-center">
-          <span className="text-6xl mb-4 block">📦</span>
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-white flex items-center justify-center p-4">
+        <div className="text-center bg-white rounded-xl shadow-2xl p-8 max-w-md transform animate-slide-up">
+          <div className="inline-block p-4 bg-gray-50 rounded-full mb-4">
+            <span className="text-6xl">📦</span>
+          </div>
           <h2 className="text-2xl font-bold text-gray-800 mb-4">No Orders Yet</h2>
           <p className="text-gray-600 mb-6">You haven't placed any orders yet</p>
           <Link
             to="/home"
-            className="px-6 py-3 bg-primary text-white rounded-lg hover:bg-red-600"
+            className="inline-block px-8 py-3 bg-primary text-white rounded-lg hover:bg-red-600 transition-all transform hover:scale-105 hover:shadow-lg font-semibold"
           >
             Start Shopping
           </Link>
@@ -140,23 +146,26 @@ const Orders = () => {
   return (
     <div className="min-h-screen bg-gray-50 py-8">
       <div className="max-w-4xl mx-auto px-4">
-        <h1 className="text-3xl font-bold text-gray-800 mb-8">My Orders</h1>
+        <h1 className="text-3xl font-bold text-gray-800 mb-8 flex items-center gap-3">
+          <span>📦</span>
+          My Orders
+        </h1>
 
         <div className="space-y-6">
           {orders.map((order) => (
-            <div key={order.id} className="bg-white rounded-lg shadow-md overflow-hidden">
+            <div key={order.id} className="bg-white rounded-xl shadow-md overflow-hidden hover:shadow-xl transition-all transform hover:-translate-y-1 border border-gray-100">
               {/* Order Header */}
-              <div className="bg-gray-50 p-4 border-b flex flex-wrap justify-between items-center gap-4">
+              <div className="bg-gradient-to-r from-gray-50 to-white p-4 border-b flex flex-wrap justify-between items-center gap-4">
                 <div>
-                  <p className="text-sm text-gray-500">Order ID</p>
+                  <p className="text-sm text-gray-500 font-medium">Order ID</p>
                   <p className="font-mono font-semibold text-gray-800">{order.id}</p>
                 </div>
                 <div>
-                  <p className="text-sm text-gray-500">Order Date</p>
+                  <p className="text-sm text-gray-500 font-medium">Order Date</p>
                   <p className="font-semibold text-gray-800">{formatDate(order.created_at)}</p>
                 </div>
                 <div>
-                  <span className={`px-3 py-1 rounded-full text-sm font-medium ${getStatusColor(order.status)}`}>
+                  <span className={`px-4 py-2 rounded-full text-sm font-semibold shadow-sm ${getStatusColor(order.status)}`}>
                     {order.status.charAt(0).toUpperCase() + order.status.slice(1)}
                   </span>
                 </div>
@@ -165,8 +174,8 @@ const Orders = () => {
               {/* Order Items */}
               <div className="divide-y">
                 {order.items.map((item, index) => (
-                  <div key={index} className="p-4 flex items-center gap-4">
-                    <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+                  <div key={index} className="p-4 flex items-center gap-4 hover:bg-gray-50 transition-colors">
+                    <div className="w-16 h-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-lg flex items-center justify-center border border-gray-200">
                       <span className="text-2xl">📦</span>
                     </div>
                     <div className="flex-1 min-w-0">
@@ -216,17 +225,17 @@ const Orders = () => {
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page === 1}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 disabled:transform-none"
             >
               Previous
             </button>
-            <span className="px-4 py-2 text-gray-600">
+            <span className="px-4 py-2 text-gray-600 font-medium">
               Page {page} of {totalPages}
             </span>
             <button
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
               disabled={page === totalPages}
-              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="px-4 py-2 bg-gray-200 text-gray-800 rounded-lg hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed transition-all transform hover:scale-105 disabled:transform-none"
             >
               Next
             </button>

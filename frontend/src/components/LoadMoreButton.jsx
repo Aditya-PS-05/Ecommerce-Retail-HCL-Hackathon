@@ -6,7 +6,7 @@ const LoadMoreButton = ({ onClick, loading, hasMore }) => {
       <button
         onClick={onClick}
         disabled={loading}
-        className={`px-8 py-3 rounded-lg font-semibold transition-colors ${
+        className={`px-8 py-3 rounded-lg font-semibold transition-all transform hover:scale-105 hover:shadow-lg ${
           loading
             ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
             : 'bg-primary text-white hover:bg-red-600'
